@@ -30,6 +30,11 @@ HALLS = {
     "Brody Square": "Brody%20Square",
     "The Edge at Akers": "The%20Edge%20at%20Akers",
     "The Gallery at Snyder Phillips": "The%20Gallery%20at%20Snyder%20Phillips",
+    "The State Room at Kellogg": "The%20State%20Room%20at%20Kellogg",
+    # "Heritage Commons at Landon": "Heritage%20Commons%20at%20Landon",
+    # "South Pointe at Case": "South%20Pointe%20at%20Case",
+    # "The Vista at Shaw": "The%20Vista%20at%20Shaw",
+    # "Thrive at Owen": "Thrive%20at%20Owen",
 }
 
 MENU_URL = "https://eatatstate.msu.edu/menu/{hall}/all/{date}"
@@ -185,7 +190,7 @@ def build_html(today, today_data, open_halls, hall_info=None):
     day_name = DAY_NAMES[today.weekday()]
 
     highlights = []
-    for hall_name in sorted(open_halls):
+    for hall_name in sorted(today_data.keys()):
         data = today_data.get(hall_name, {})
         for station, meals in data.get("stations", {}).items():
             for meal_time, items in meals.items():
@@ -228,12 +233,19 @@ h3 {{ color: #18453B; margin: 14px 0 6px; font-size: 1.0em; }}
             parts.append(f'<div class="hl-item">{meal} at {hall} ({station}): <b>{name}</b></div>')
         parts.append('</div>')
 
-    closed_halls = [h for h in HALLS if h not in open_halls]
-    if closed_halls:
-        if not hall_info:
-            hall_info = {}
+    if not hall_info:
+        hall_info = {}
+    closed_halls = []
+    no_menu_halls = []
+    for h in HALLS:
+        if h not in open_halls and h in hall_info:
+            closed_halls.append(h)
+        elif h in today_data and ("closed" in today_data[h] or "error" in today_data[h]):
+            no_menu_halls.append(h)
+
+    if closed_halls or no_menu_halls:
         parts.append('<div class="closed-halls">')
-        parts.append(f'<h2>Closed Today ({len(closed_halls)})</h2>')
+        parts.append(f'<h2>Closed / No Menu ({len(closed_halls) + len(no_menu_halls)})</h2>')
         for h in closed_halls:
             info = hall_info.get(h, {})
             detail = ""
@@ -241,19 +253,20 @@ h3 {{ color: #18453B; margin: 14px 0 6px; font-size: 1.0em; }}
             if date_range:
                 detail = f' <span class="closed-hall-detail">-- Closed {date_range}</span>'
             parts.append(f'<div class="closed-hall-entry"><span class="closed-hall-name">{h}</span>{detail}</div>')
+        for h in no_menu_halls:
+            parts.append(f'<div class="closed-hall-entry"><span class="closed-hall-name">{h}</span> <span class="closed-hall-detail">-- No menu available today</span></div>')
         parts.append('</div>')
 
-    if not open_halls:
-        parts.append('<p class="closed">All target dining halls are closed today.</p>')
+    halls_with_menus = sorted(h for h in HALLS if h in today_data and "stations" in today_data[h])
+    if not halls_with_menus:
+        parts.append('<p class="closed">No menu data available for any dining hall today.</p>')
     else:
         for meal_time in ["Breakfast", "Lunch", "Dinner"]:
             meal_has_content = False
             meal_parts = [f'<h2>{meal_time}</h2>']
 
-            for hall_name in sorted(open_halls):
-                data = today_data.get(hall_name, {"closed": True})
-                if "closed" in data or "error" in data:
-                    continue
+            for hall_name in halls_with_menus:
+                data = today_data[hall_name]
                 hall_stations = []
                 for station, meals in data.get("stations", {}).items():
                     items = meals.get(meal_time)
@@ -306,7 +319,10 @@ def main():
     open_halls, hall_info = check_open_halls()
 
     today_data = {}
-    for hall_name in open_halls:
+    for hall_name in HALLS:
+        if hall_name not in open_halls and hall_name in hall_info:
+            log.info("  Skipping %s (closed per hours page)", hall_name)
+            continue
         log.info("  Scraping %s", hall_name)
         today_data[hall_name] = scrape_menu(HALLS[hall_name], date_str)
 

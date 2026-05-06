@@ -4,6 +4,10 @@ Newest first. Prepend new rows below this line.
 
 | Date | File | Action | Archive name | Note |
 |---|---|---|---|---|
+| 2026-05-06 | `.github/workflows/daily-menu.yml` | CREATED | - | GitHub Actions workflow: runs daily at 11:00 UTC (7 AM EDT), reads secrets for email creds |
+| 2026-05-06 | `.gitignore`, `requirements.txt` | CREATED | - | Git config: excludes config.json/logs/cache; pip deps for CI |
+| 2026-05-06 | `msu_menu.py` | MODIFIED | - | load_config() now supports env vars (GitHub Actions) with fallback to config.json (local) |
+| 2026-05-06 | repo | NOTE | - | Pushed to private GitHub repo minghaowang-research/msu-menu-emailer. Secrets set: SENDER_EMAIL, RECIPIENT_EMAILS, APP_PASSWORD. Test workflow run succeeded. |
 | 2026-05-06 | `config.json`, `msu_menu.py`, `HOW_THIS_WORKS.md` | MODIFIED | - | Changed recipient_email (string) to recipient_emails (list) to support multiple recipients. Backward-compatible fallback to old key. |
 | 2026-05-06 | `CLAUDE.md` | MODIFIED | - | Updated to match main CLAUDE.md rules: newest-first tracking rule (#7), daily not weekly description, Full Disk Access note, fixed session resume to read first 30 lines, removed stale dry-run command |
 | 2026-05-06 | `_CHANGELOG.md`, `_DECISIONS.md` | MODIFIED | - | Reversed to newest-first order per main CLAUDE.md rule #13 |
