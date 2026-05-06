@@ -1,0 +1,7 @@
+config.json
+latest_menu.html
+msu_menu.log
+launchd_stdout.log
+launchd_stderr.log
+__pycache__/
+_Archive/
