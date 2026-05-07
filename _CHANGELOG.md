@@ -4,6 +4,8 @@ Newest first. Prepend new rows below this line.
 
 | Date | File | Action | Archive name | Note |
 |---|---|---|---|---|
+| 2026-05-06 | `msu_menu.py` | MODIFIED | - | Table layout: halls as side-by-side columns per meal. Green banner hall names. Compact card style for Gmail. |
+| 2026-05-06 | `msu_menu.py` | MODIFIED | - | Added Kellogg (active) + 4 commented-out halls (Landon, Case, Shaw, Owen). Halls not on hours page get scraped anyway; "No menu available" shown if empty. |
 | 2026-05-06 | `.github/workflows/daily-menu.yml` | CREATED | - | GitHub Actions workflow: runs daily at 11:00 UTC (7 AM EDT), reads secrets for email creds |
 | 2026-05-06 | `.gitignore`, `requirements.txt` | CREATED | - | Git config: excludes config.json/logs/cache; pip deps for CI |
 | 2026-05-06 | `msu_menu.py` | MODIFIED | - | load_config() now supports env vars (GitHub Actions) with fallback to config.json (local) |
@@ -28,4 +30,4 @@ Newest first. Prepend new rows below this line.
 | 2026-05-05 | `config.json` | CREATED | - | Gmail SMTP credentials (app password) |
 | 2026-05-05 | `msu_menu.py` | CREATED | - | Main script: scrapes 3 MSU dining halls, checks hours page for open/closed, builds weekly HTML email |
 
-**Handoff note (2026-05-06):** All coding complete. User reported launchd fails when Mac is asleep because Python lacks Full Disk Access to Documents/. Fix: System Settings > Privacy & Security > Full Disk Access > add `/opt/homebrew/bin/python3`. User may not have installed the plist yet (`cp` + `launchctl load` commands in HOW_THIS_WORKS.md). No pending code tasks.
+**Handoff note (2026-05-06):** Project on GitHub (private repo minghaowang-research/msu-menu-emailer). GitHub Actions runs daily at 7 AM EDT. Secrets: SENDER_EMAIL, RECIPIENT_EMAILS, APP_PASSWORD. To add recipients: edit RECIPIENT_EMAILS secret (comma-separated). To add/remove halls: edit HALLS dict in msu_menu.py on GitHub. Local launchd plist also works if Mac has Full Disk Access for Python.

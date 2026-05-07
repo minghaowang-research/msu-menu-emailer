@@ -201,26 +201,26 @@ def build_html(today, today_data, open_halls, hall_info=None):
     parts = [f"""<!DOCTYPE html>
 <html><head><meta charset="utf-8">
 <style>
-body {{ font-family: -apple-system, Helvetica, Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; color: #333; }}
+body {{ font-family: -apple-system, Helvetica, Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; color: #333; }}
 h1 {{ color: #18453B; border-bottom: 3px solid #18453B; padding-bottom: 8px; font-size: 1.4em; }}
 h2 {{ color: #18453B; margin-top: 24px; font-size: 1.2em; border-bottom: 1px solid #ccc; padding-bottom: 4px; }}
-h3 {{ color: #18453B; margin: 14px 0 6px; font-size: 1.0em; }}
-.station {{ margin: 0 0 12px 8px; }}
-.station-name {{ font-weight: bold; color: #444; }}
-.meal-label {{ color: #666; font-size: 0.9em; font-weight: bold; margin: 6px 0 2px 0; }}
-.item {{ margin: 1px 0; font-size: 0.92em; }}
-.item-hl {{ margin: 1px 0; font-size: 0.92em; font-weight: bold; color: #b71c1c; }}
-.prefs {{ color: #2e7d32; font-size: 0.82em; }}
+.hall-col {{ vertical-align: top; padding: 0 12px 12px 0; }}
+.hall-name {{ color: #fff; background: #18453B; padding: 6px 10px; font-weight: bold; font-size: 1.0em; border-radius: 4px 4px 0 0; margin: 0; }}
+.hall-body {{ background: #f9f9f9; border: 1px solid #ddd; border-top: none; border-radius: 0 0 4px 4px; padding: 8px 10px; }}
+.station-name {{ font-weight: bold; color: #444; font-size: 0.9em; margin: 8px 0 2px 0; }}
+.station-name:first-child {{ margin-top: 0; }}
+.item {{ margin: 1px 0; font-size: 0.88em; color: #555; }}
+.item-hl {{ margin: 1px 0; font-size: 0.88em; font-weight: bold; color: #b71c1c; }}
+.prefs {{ color: #2e7d32; font-size: 0.78em; }}
 .closed {{ color: #999; font-style: italic; }}
 .hl-box {{ background: #fff3e0; border: 2px solid #e65100; border-radius: 8px; padding: 12px; margin-bottom: 18px; }}
-.hl-box h2 {{ color: #e65100; margin: 0 0 6px 0; font-size: 1.05em; }}
+.hl-box h2 {{ color: #e65100; margin: 0 0 6px 0; font-size: 1.05em; border: none; }}
 .hl-item {{ margin: 3px 0; font-size: 0.93em; }}
-.hl-none {{ color: #999; font-style: italic; }}
 .closed-halls {{ background: #f5f5f5; border: 1px solid #ddd; border-radius: 8px; padding: 12px 16px; margin-bottom: 18px; }}
-.closed-halls h2 {{ color: #999; margin: 0 0 8px 0; font-size: 1.05em; }}
-.closed-hall-entry {{ margin: 6px 0; font-size: 0.95em; color: #666; }}
+.closed-halls h2 {{ color: #999; margin: 0 0 8px 0; font-size: 1.05em; border: none; }}
+.closed-hall-entry {{ margin: 4px 0; font-size: 0.93em; color: #666; }}
 .closed-hall-name {{ font-weight: bold; color: #555; }}
-.closed-hall-detail {{ color: #888; font-size: 0.88em; }}
+.closed-hall-detail {{ color: #888; font-size: 0.85em; }}
 .note {{ color: #888; font-size: 0.8em; margin-top: 24px; }}
 </style></head><body>
 <h1>[MSU Menu] {day_name}, {today.strftime('%B %d')}</h1>
@@ -262,33 +262,34 @@ h3 {{ color: #18453B; margin: 14px 0 6px; font-size: 1.0em; }}
         parts.append('<p class="closed">No menu data available for any dining hall today.</p>')
     else:
         for meal_time in ["Breakfast", "Lunch", "Dinner"]:
-            meal_has_content = False
-            meal_parts = [f'<h2>{meal_time}</h2>']
-
+            hall_columns = []
             for hall_name in halls_with_menus:
                 data = today_data[hall_name]
-                hall_stations = []
+                col_parts = []
                 for station, meals in data.get("stations", {}).items():
                     items = meals.get(meal_time)
                     if not items:
                         continue
-                    station_lines = [f'<div class="station"><span class="station-name">{station}</span>']
+                    col_parts.append(f'<div class="station-name">{station}</div>')
                     for item in items:
                         pref = ""
                         if item["prefs"]:
                             pref = f' <span class="prefs">({", ".join(item["prefs"])})</span>'
                         cls = "item-hl" if is_highlight(item["name"]) else "item"
-                        station_lines.append(f'<div class="{cls}">- {item["name"]}{pref}</div>')
-                    station_lines.append('</div>')
-                    hall_stations.extend(station_lines)
+                        col_parts.append(f'<div class="{cls}">{item["name"]}{pref}</div>')
+                if col_parts:
+                    hall_columns.append((hall_name, "\n".join(col_parts)))
 
-                if hall_stations:
-                    meal_has_content = True
-                    meal_parts.append(f'<h3>{hall_name}</h3>')
-                    meal_parts.extend(hall_stations)
-
-            if meal_has_content:
-                parts.extend(meal_parts)
+            if hall_columns:
+                parts.append(f'<h2>{meal_time}</h2>')
+                parts.append('<table width="100%" cellpadding="0" cellspacing="0"><tr>')
+                col_width = 100 // len(hall_columns)
+                for hall_name, content in hall_columns:
+                    parts.append(f'<td class="hall-col" width="{col_width}%">')
+                    parts.append(f'<div class="hall-name">{hall_name}</div>')
+                    parts.append(f'<div class="hall-body">{content}</div>')
+                    parts.append('</td>')
+                parts.append('</tr></table>')
 
     parts.append('<p class="note">Auto-generated from eatatstate.msu.edu</p></body></html>')
     return "\n".join(parts)
