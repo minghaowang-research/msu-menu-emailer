@@ -17,6 +17,7 @@ import logging
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_PATH = os.path.join(SCRIPT_DIR, "config.json")
+EMAILS_PATH = os.path.join(SCRIPT_DIR, "emails.txt")
 LOG_PATH = os.path.join(SCRIPT_DIR, "msu_menu.log")
 
 logging.basicConfig(
@@ -54,16 +55,26 @@ SESSION.headers.update({"User-Agent": "MSU-Menu-Emailer/1.0"})
 DAY_NAMES = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
 
+def load_emails():
+    if os.path.exists(EMAILS_PATH):
+        with open(EMAILS_PATH) as f:
+            return [line.strip() for line in f if line.strip() and not line.startswith("#")]
+    return []
+
+
 def load_config():
+    emails = load_emails()
     if os.environ.get("SENDER_EMAIL"):
-        recipients = os.environ.get("RECIPIENT_EMAILS", "")
         return {
             "sender_email": os.environ["SENDER_EMAIL"],
-            "recipient_emails": [e.strip() for e in recipients.split(",") if e.strip()],
+            "recipient_emails": emails or [os.environ.get("RECIPIENT_EMAILS", "")],
             "app_password": os.environ["APP_PASSWORD"],
         }
     with open(CONFIG_PATH) as f:
-        return json.load(f)
+        config = json.load(f)
+    if emails:
+        config["recipient_emails"] = emails
+    return config
 
 
 def check_open_halls():
