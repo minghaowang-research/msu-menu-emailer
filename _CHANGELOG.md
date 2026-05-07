@@ -4,6 +4,8 @@ Newest first. Prepend new rows below this line.
 
 | Date | File | Action | Archive name | Note |
 |---|---|---|---|---|
+| 2026-05-06 | `emails.txt` | CREATED | - | Email recipient list, one per line. Script reads this instead of secrets/config for recipients. |
+| 2026-05-06 | `msu_menu.py` | MODIFIED | - | load_emails() reads emails.txt; load_config() uses it for recipient list |
 | 2026-05-06 | `README.md` | CREATED | - | GitHub repo main page: how to edit email list, halls, keywords, and run manually |
 | 2026-05-06 | `msu_menu.py` | MODIFIED | - | Updated HIGHLIGHT_KEYWORDS: removed t-bone, added tenderloin, prime rib, brisket, scallop, calamari, pollock, halibut, perch, crawfish |
 | 2026-05-06 | `msu_menu.py` | MODIFIED | - | Table layout: halls as side-by-side columns per meal. Green banner hall names. Compact card style for Gmail. |
@@ -32,4 +34,4 @@ Newest first. Prepend new rows below this line.
 | 2026-05-05 | `config.json` | CREATED | - | Gmail SMTP credentials (app password) |
 | 2026-05-05 | `msu_menu.py` | CREATED | - | Main script: scrapes 3 MSU dining halls, checks hours page for open/closed, builds weekly HTML email |
 
-**Handoff note (2026-05-06):** Project on GitHub (private repo minghaowang-research/msu-menu-emailer). GitHub Actions runs daily at 7 AM EDT. Secrets: SENDER_EMAIL, RECIPIENT_EMAILS, APP_PASSWORD. To add recipients: edit RECIPIENT_EMAILS secret (comma-separated). To add/remove halls: edit HALLS dict in msu_menu.py on GitHub. Local launchd plist also works if Mac has Full Disk Access for Python.
+**Handoff note (2026-05-06 session 2):** Project on GitHub (private repo minghaowang-research/msu-menu-emailer). GitHub Actions runs daily at 7 AM EDT. Secrets: SENDER_EMAIL, APP_PASSWORD. Email recipients now in `emails.txt` (one per line, editable on GitHub). Active halls: Brody, Akers, Gallery, Kellogg. 4 more commented out in HALLS dict. Email uses table layout (halls as side-by-side columns). README.md on repo has all instructions. Local launchd also works if Mac has Full Disk Access for Python.

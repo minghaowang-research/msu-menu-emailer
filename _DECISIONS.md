@@ -4,6 +4,7 @@ Newest first. Prepend new rows below this line.
 
 | Date | Decision | Why |
 |---|---|---|
+| 2026-05-06 | Email list in emails.txt instead of GitHub Secrets | Secrets are write-only (can't see current value). A plain text file is visible and editable on GitHub. Repo is private so emails aren't exposed. |
 | 2026-05-06 | Table layout (halls as columns) over vertical list | Cuts email length in half; works in Gmail app and desktop. Columns auto-size by hall count. |
 | 2026-05-06 | Scrape halls not on hours page instead of skipping | Kellogg (State Room) not listed on hours page under same name. Scrape anyway; show "No menu available" if empty. |
 | 2026-05-06 | GitHub Actions over local-only launchd | Runs even when Mac is off/asleep. No Full Disk Access issues. Secrets stored encrypted. |

@@ -12,6 +12,7 @@ Last updated: 2026-05-06 (session 2)
 | msu_menu.log | file | Runtime log (auto-appended). Git-ignored. |
 | requirements.txt | file | Python pip dependencies for GitHub Actions |
 | .gitignore | file | Excludes config.json, logs, cache from repo |
+| emails.txt | file | Recipient email list, one per line. Editable on GitHub. |
 | README.md | file | GitHub repo main page with how-to instructions |
 | CLAUDE.md | file | Project docs and setup reference |
 | HOW_THIS_WORKS.md | file | Configuration guide for future Claude sessions |
