@@ -9,8 +9,12 @@ Daily email with MSU dining hall menus. Highlights steak and fish items.
 1. Go to **Settings** tab (top of this page)
 2. Left sidebar: **Secrets and variables** > **Actions**
 3. Click pencil icon next to **RECIPIENT_EMAILS**
-4. Enter emails comma-separated: `you@gmail.com, friend@gmail.com`
+4. Enter ALL emails comma-separated: `you@gmail.com, friend@gmail.com`
 5. Click **Update secret**
+
+Note: GitHub never shows the current value (security feature). You always replace the entire list. To remove someone, paste the full list without them.
+
+Current list: `minghaowang.chinese@gmail.com`
 
 ### Add/remove dining halls
 
