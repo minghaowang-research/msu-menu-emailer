@@ -41,9 +41,11 @@ MENU_URL = "https://eatatstate.msu.edu/menu/{hall}/all/{date}"
 HOURS_URL = "https://eatatstate.msu.edu/dining-hall-hours"
 
 HIGHLIGHT_KEYWORDS = [
-    "steak", "sirloin", "ribeye", "filet", "strip steak", "t-bone", "flank",
+    "steak", "sirloin", "ribeye", "filet", "strip steak", "flank",
+    "tenderloin", "prime rib", "brisket",
     "salmon", "fish", "tilapia", "cod", "shrimp", "seafood", "tuna", "mahi",
     "swordfish", "trout", "catfish", "walleye", "crab", "lobster",
+    "scallop", "calamari", "pollock", "halibut", "perch", "crawfish",
 ]
 
 SESSION = requests.Session()

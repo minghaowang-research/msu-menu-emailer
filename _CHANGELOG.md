@@ -4,6 +4,8 @@ Newest first. Prepend new rows below this line.
 
 | Date | File | Action | Archive name | Note |
 |---|---|---|---|---|
+| 2026-05-06 | `README.md` | CREATED | - | GitHub repo main page: how to edit email list, halls, keywords, and run manually |
+| 2026-05-06 | `msu_menu.py` | MODIFIED | - | Updated HIGHLIGHT_KEYWORDS: removed t-bone, added tenderloin, prime rib, brisket, scallop, calamari, pollock, halibut, perch, crawfish |
 | 2026-05-06 | `msu_menu.py` | MODIFIED | - | Table layout: halls as side-by-side columns per meal. Green banner hall names. Compact card style for Gmail. |
 | 2026-05-06 | `msu_menu.py` | MODIFIED | - | Added Kellogg (active) + 4 commented-out halls (Landon, Case, Shaw, Owen). Halls not on hours page get scraped anyway; "No menu available" shown if empty. |
 | 2026-05-06 | `.github/workflows/daily-menu.yml` | CREATED | - | GitHub Actions workflow: runs daily at 11:00 UTC (7 AM EDT), reads secrets for email creds |
