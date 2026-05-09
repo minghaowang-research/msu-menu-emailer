@@ -63,17 +63,20 @@ def load_emails():
 
 
 def load_config():
-    emails = load_emails()
+    file_emails = load_emails()
     if os.environ.get("SENDER_EMAIL"):
+        secret_raw = os.environ.get("RECIPIENT_EMAILS", "")
+        secret_emails = [e.strip() for e in secret_raw.split(",") if e.strip()]
+        all_emails = list(dict.fromkeys(file_emails + secret_emails))
         return {
             "sender_email": os.environ["SENDER_EMAIL"],
-            "recipient_emails": emails or [os.environ.get("RECIPIENT_EMAILS", "")],
+            "recipient_emails": all_emails,
             "app_password": os.environ["APP_PASSWORD"],
         }
     with open(CONFIG_PATH) as f:
         config = json.load(f)
-    if emails:
-        config["recipient_emails"] = emails
+    all_emails = list(dict.fromkeys(file_emails + config.get("recipient_emails", [])))
+    config["recipient_emails"] = all_emails
     return config
 
 
@@ -309,12 +312,13 @@ h2 {{ color: #18453B; margin-top: 24px; font-size: 1.2em; border-bottom: 1px sol
 
 
 def send_email(html, config, today):
-    recipients = config.get("recipient_emails", [config.get("recipient_email")])
+    recipients = config.get("recipient_emails", [])
     day_name = DAY_NAMES[today.weekday()]
     msg = MIMEMultipart("alternative")
     msg["Subject"] = f"[MSU Menu] {day_name}, {today.strftime('%B %-d')}"
     msg["From"] = config["sender_email"]
-    msg["To"] = ", ".join(recipients)
+    msg["To"] = config["sender_email"]
+    msg["Bcc"] = ", ".join(recipients)
     msg.attach(MIMEText(html, "html"))
 
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:

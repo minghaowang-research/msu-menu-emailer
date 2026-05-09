@@ -1,6 +1,6 @@
 # MSU Menu Emailer
 
-Daily email with MSU dining hall menus. Highlights steak and fish items.
+Daily email with MSU dining hall menus. Highlights steak and fish items. All recipients are BCC'd (no one sees each other's email).
 
 ## Setup (first time)
 
@@ -20,20 +20,22 @@ Click **Fork** in the top right. This creates your own copy.
 In your forked repo:
 
 1. Go to **Settings** > **Secrets and variables** > **Actions**
-2. Click **New repository secret** and add these two:
+2. Click **New repository secret** and add these:
 
 | Name | Value |
 |---|---|
 | `SENDER_EMAIL` | Your Gmail address (e.g. `you@gmail.com`) |
 | `APP_PASSWORD` | The 16-character app password from step 2 |
+| `RECIPIENT_EMAILS` | (Optional) Comma-separated emails you want to keep private (e.g. `me@gmail.com,friend@gmail.com`) |
 
-### 4. Add your email to the recipient list
+### 4. Add recipients
 
-1. Click **emails.txt** in your repo
-2. Click pencil icon (edit)
-3. Replace `your-email@gmail.com` with your real email
-4. Add more emails on separate lines if you want
-5. Click **Commit changes**
+You have two ways to add email recipients. Both can be used together -- duplicates are automatically removed.
+
+- **`emails.txt`** -- edit this file on GitHub. One email per line. Visible to anyone if the repo is public.
+- **`RECIPIENT_EMAILS` secret** -- add in Settings > Secrets > Actions. Comma-separated. Hidden from public view (write-only, even you can't see it after saving).
+
+**Tip:** If your repo is public, use the secret for your personal emails and `emails.txt` for emails people voluntarily add.
 
 ### 5. Test it
 
@@ -46,7 +48,7 @@ That's it! The email will now arrive daily at 7:00 AM Eastern.
 
 ---
 
-## How to Edit (all on GitHub, no code needed)
+## How to Customize (all on GitHub, no code needed)
 
 ### Add/remove email recipients
 
@@ -56,6 +58,8 @@ That's it! The email will now arrive daily at 7:00 AM Eastern.
 4. Lines starting with `#` are ignored
 5. Click **Commit changes**
 
+Or use the `RECIPIENT_EMAILS` secret for private emails (see step 3 above).
+
 ### Add/remove dining halls
 
 1. Click **msu_menu.py** above
@@ -64,17 +68,32 @@ That's it! The email will now arrive daily at 7:00 AM Eastern.
 4. Uncomment a hall (remove the `#`) to add it, or comment it out (add `#`) to remove
 5. Click **Commit changes**
 
+Currently active: Brody, Akers, Gallery (Snyder Phillips), Kellogg.
+Available to uncomment: Landon, Case, Shaw, Owen.
+
+### Change highlight keywords (steak, fish, etc.)
+
+Items matching these keywords show up in a special box at the top of the email and are bolded in red in the menu.
+
+1. Edit **msu_menu.py** on GitHub
+2. Find `HIGHLIGHT_KEYWORDS = [` near the top
+3. Add or remove keywords (lowercase, one per line inside the list)
+4. Click **Commit changes**
+
+Current keywords: steak, sirloin, ribeye, filet, strip steak, flank, tenderloin, prime rib, brisket, salmon, fish, tilapia, cod, shrimp, seafood, tuna, mahi, swordfish, trout, catfish, walleye, crab, lobster, scallop, calamari, pollock, halibut, perch, crawfish.
+
+### Change the schedule
+
+1. Edit **.github/workflows/daily-menu.yml**
+2. Find the `cron:` line
+3. Change the time using [crontab.guru](https://crontab.guru/) for help
+4. Default: `0 11 * * *` = 7:00 AM Eastern (11:00 UTC)
+
 ### Run it now (test)
 
 1. Go to **Actions** tab
 2. Click **Daily MSU Menu Email**
 3. Click **Run workflow** > **Run workflow**
-
-### Change highlight keywords (steak, fish, etc.)
-
-1. Edit **msu_menu.py** on GitHub
-2. Find `HIGHLIGHT_KEYWORDS = [` near the top
-3. Add or remove keywords, commit
 
 ## Schedule
 
