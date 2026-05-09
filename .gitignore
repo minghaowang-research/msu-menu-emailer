@@ -5,3 +5,8 @@ launchd_stdout.log
 launchd_stderr.log
 __pycache__/
 _Archive/
+_CHANGELOG.md
+_DECISIONS.md
+_FOLDER_MAP.md
+CLAUDE.md
+HOW_THIS_WORKS.md
