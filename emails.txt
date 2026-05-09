@@ -1,1 +1,3 @@
-minghaowang.chinese@gmail.com
+# Add recipient emails, one per line
+# Lines starting with # are ignored
+your-email@gmail.com
