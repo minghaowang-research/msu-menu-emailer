@@ -28,14 +28,15 @@ In your forked repo:
 | `APP_PASSWORD` | The 16-character app password from step 2 |
 | `RECIPIENT_EMAILS` | (Optional) Comma-separated emails you want to keep private (e.g. `me@gmail.com,friend@gmail.com`) |
 
-### 4. Add recipients
+### 4. Add your email
 
-You have two ways to add email recipients. Both can be used together -- duplicates are automatically removed.
+1. Click **emails.txt** in your repo
+2. Click pencil icon (edit)
+3. Replace `# your-email@gmail.com` with your real email (remove the `#`)
+4. Add more emails on separate lines if you want
+5. Click **Commit changes**
 
-- **`emails.txt`** -- edit this file on GitHub. One email per line. Visible to anyone if the repo is public.
-- **`RECIPIENT_EMAILS` secret** -- add in Settings > Secrets > Actions. Comma-separated. Hidden from public view (write-only, even you can't see it after saving).
-
-**Tip:** If your repo is public, use the secret for your personal emails and `emails.txt` for emails people voluntarily add.
+Or use the `RECIPIENT_EMAILS` secret (Settings > Secrets > Actions, comma-separated) to keep emails private. Both methods work together -- duplicates are automatically removed.
 
 ### 5. Test it
 
