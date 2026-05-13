@@ -100,7 +100,8 @@ def check_open_halls():
         if name not in HALLS:
             continue
 
-        is_open = bool(est.find("div", class_="office-hours-status--open"))
+        has_time_slots = bool(est.find("span", class_="office-hours__item-slots"))
+        is_open = has_time_slots or bool(est.find("div", class_="office-hours-status--open"))
 
         date_range = ""
         valid_div = est.find("div", attrs={"data-valid-dates": True})
@@ -251,26 +252,23 @@ h2 {{ color: #18453B; margin-top: 24px; font-size: 1.2em; border-bottom: 1px sol
 
     if not hall_info:
         hall_info = {}
-    closed_halls = []
-    no_menu_halls = []
+    unavailable_halls = []
     for h in HALLS:
-        if h not in open_halls and h in hall_info:
-            closed_halls.append(h)
-        elif h in today_data and ("closed" in today_data[h] or "error" in today_data[h]):
-            no_menu_halls.append(h)
+        has_menu = h in today_data and "stations" in today_data[h]
+        if not has_menu:
+            unavailable_halls.append(h)
 
-    if closed_halls or no_menu_halls:
+    if unavailable_halls:
         parts.append('<div class="closed-halls">')
-        parts.append(f'<h2>Closed / No Menu ({len(closed_halls) + len(no_menu_halls)})</h2>')
-        for h in closed_halls:
+        parts.append(f'<h2>Closed / No Menu ({len(unavailable_halls)})</h2>')
+        for h in unavailable_halls:
             info = hall_info.get(h, {})
-            detail = ""
             date_range = info.get("date_range", "")
             if date_range:
                 detail = f' <span class="closed-hall-detail">-- Closed {date_range}</span>'
+            else:
+                detail = ' <span class="closed-hall-detail">-- No menu available today</span>'
             parts.append(f'<div class="closed-hall-entry"><span class="closed-hall-name">{h}</span>{detail}</div>')
-        for h in no_menu_halls:
-            parts.append(f'<div class="closed-hall-entry"><span class="closed-hall-name">{h}</span> <span class="closed-hall-detail">-- No menu available today</span></div>')
         parts.append('</div>')
 
     halls_with_menus = sorted(h for h in HALLS if h in today_data and "stations" in today_data[h])
@@ -338,9 +336,6 @@ def main():
 
     today_data = {}
     for hall_name in HALLS:
-        if hall_name not in open_halls and hall_name in hall_info:
-            log.info("  Skipping %s (closed per hours page)", hall_name)
-            continue
         log.info("  Scraping %s", hall_name)
         today_data[hall_name] = scrape_menu(HALLS[hall_name], date_str)
 
