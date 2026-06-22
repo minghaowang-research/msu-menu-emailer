@@ -336,6 +336,9 @@ def main():
 
     today_data = {}
     for hall_name in HALLS:
+        if hall_name not in open_halls:
+            log.info("  Skipping %s (closed per hours page)", hall_name)
+            continue
         log.info("  Scraping %s", hall_name)
         today_data[hall_name] = scrape_menu(HALLS[hall_name], date_str)
 
