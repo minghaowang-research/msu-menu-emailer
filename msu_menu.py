@@ -96,8 +96,13 @@ def check_open_halls():
         h3 = est.find("h3")
         if not h3:
             continue
-        name = h3.get_text(strip=True)
-        if name not in HALLS:
+        page_name = h3.get_text(strip=True)
+        name = None
+        for hall in HALLS:
+            if page_name.startswith(hall):
+                name = hall
+                break
+        if not name:
             continue
 
         has_time_slots = bool(est.find("span", class_="office-hours__item-slots"))
