@@ -33,7 +33,7 @@ HALLS = {
     "The Gallery at Snyder Phillips": "The%20Gallery%20at%20Snyder%20Phillips",
     "The State Room at Kellogg": "The%20State%20Room%20at%20Kellogg",
     # "Heritage Commons at Landon": "Heritage%20Commons%20at%20Landon",
-    # "South Pointe at Case": "South%20Pointe%20at%20Case",
+    "South Pointe at Case": "South%20Pointe%20at%20Case",
     # "The Vista at Shaw": "The%20Vista%20at%20Shaw",
     # "Thrive at Owen": "Thrive%20at%20Owen",
 }
@@ -42,7 +42,7 @@ MENU_URL = "https://eatatstate.msu.edu/menu/{hall}/all/{date}"
 HOURS_URL = "https://eatatstate.msu.edu/dining-hall-hours"
 
 HIGHLIGHT_KEYWORDS = [
-    "steak", "sirloin", "ribeye", "filet", "strip steak", "flank",
+    "beef", "steak", "sirloin", "ribeye", "filet", "strip steak", "flank",
     "tenderloin", "prime rib", "brisket",
     "salmon", "fish", "tilapia", "cod", "shrimp", "seafood", "tuna", "mahi",
     "swordfish", "trout", "catfish", "walleye", "crab", "lobster",
@@ -203,8 +203,12 @@ def scrape_menu(hall_url_name, date_str):
     return {"stations": stations}
 
 
-def is_highlight(item_name):
+def is_highlight(item_name, station_name):
     name_lower = item_name.lower()
+    if "burger" in name_lower:
+        return False
+    if station_name == "S2" and "roll" in name_lower:
+        return False
     return any(kw in name_lower for kw in HIGHLIGHT_KEYWORDS)
 
 
@@ -217,7 +221,7 @@ def build_html(today, today_data, open_halls, hall_info=None):
         for station, meals in data.get("stations", {}).items():
             for meal_time, items in meals.items():
                 for item in items:
-                    if is_highlight(item["name"]):
+                    if is_highlight(item["name"], station):
                         highlights.append((hall_name, station, meal_time, item["name"]))
 
     parts = [f"""<!DOCTYPE html>
@@ -250,7 +254,7 @@ h2 {{ color: #18453B; margin-top: 24px; font-size: 1.2em; border-bottom: 1px sol
 
     if highlights:
         parts.append('<div class="hl-box">')
-        parts.append('<h2>Steak / Fish Today</h2>')
+        parts.append('<h2>Beef / Fish / Shellfish Today (except Burger and Roll)</h2>')
         for hall, station, meal, name in highlights:
             parts.append(f'<div class="hl-item">{meal} at {hall} ({station}): <b>{name}</b></div>')
         parts.append('</div>')
@@ -294,7 +298,7 @@ h2 {{ color: #18453B; margin-top: 24px; font-size: 1.2em; border-bottom: 1px sol
                         pref = ""
                         if item["prefs"]:
                             pref = f' <span class="prefs">({", ".join(item["prefs"])})</span>'
-                        cls = "item-hl" if is_highlight(item["name"]) else "item"
+                        cls = "item-hl" if is_highlight(item["name"], station) else "item"
                         col_parts.append(f'<div class="{cls}">{item["name"]}{pref}</div>')
                 if col_parts:
                     hall_columns.append((hall_name, "\n".join(col_parts)))
