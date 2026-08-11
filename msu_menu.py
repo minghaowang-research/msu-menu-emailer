@@ -43,7 +43,7 @@ HOURS_URL = "https://eatatstate.msu.edu/dining-hall-hours"
 
 HIGHLIGHT_KEYWORDS = [
     "beef", "steak", "sirloin", "ribeye", "filet", "strip steak", "flank",
-    "tenderloin", "rib", "brisket", "tri-tip", "pot roast",
+    "tenderloin", "prime rib", "short rib", "spare rib", "brisket", "tri-tip", "pot roast",
     "salmon", "fish", "tilapia", "cod", "shrimp", "seafood", "tuna", "mahi",
     "swordfish", "trout", "catfish", "walleye", "crab", "lobster",
     "scallop", "calamari", "pollock", "halibut", "perch", "crawfish",
