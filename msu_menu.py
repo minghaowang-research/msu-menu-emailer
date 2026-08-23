@@ -211,6 +211,8 @@ def is_highlight(item_name, station_name):
         return False
     if "taco" in name_lower:
         return False
+    if "gravy" in name_lower:
+        return False
     if station_name == "S2":
         return False
     if station_name == "Stacks" and "roast beef" in name_lower:
@@ -262,7 +264,7 @@ h2 {{ color: #18453B; margin-top: 24px; font-size: 1.2em; border-bottom: 1px sol
         parts.append('<div class="hl-box">')
         parts.append('<h2>Beef / Fish / Shellfish Today</h2>')
         parts.append('<div style="font-size:0.82em;color:#888;margin-bottom:6px;">'
-                     'Excluded: Burger (everyday), Taco (everyday), '
+                     'Excluded: Burger (everyday), Taco (everyday), Gravy (side dish), '
                      'S2 sushi station (always has fish/shellfish), '
                      'Stacks roast beef (deli meat everyday)</div>')
         for hall, station, meal, name in highlights:
