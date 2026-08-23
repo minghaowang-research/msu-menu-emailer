@@ -209,7 +209,11 @@ def is_highlight(item_name, station_name):
     name_lower = item_name.lower()
     if "burger" in name_lower:
         return False
-    if station_name == "S2" and "roll" in name_lower:
+    if "taco" in name_lower:
+        return False
+    if station_name == "S2" and ("roll" in name_lower or "smoked" in name_lower):
+        return False
+    if station_name == "Stacks" and "roast beef" in name_lower:
         return False
     return any(kw in name_lower for kw in HIGHLIGHT_KEYWORDS)
 
