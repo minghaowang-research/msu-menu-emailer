@@ -211,7 +211,7 @@ def is_highlight(item_name, station_name):
         return False
     if "taco" in name_lower:
         return False
-    if station_name == "S2" and ("roll" in name_lower or "smoked" in name_lower):
+    if station_name == "S2":
         return False
     if station_name == "Stacks" and "roast beef" in name_lower:
         return False
@@ -260,7 +260,11 @@ h2 {{ color: #18453B; margin-top: 24px; font-size: 1.2em; border-bottom: 1px sol
 
     if highlights:
         parts.append('<div class="hl-box">')
-        parts.append('<h2>Beef / Fish / Shellfish Today (except Burger and Roll)</h2>')
+        parts.append('<h2>Beef / Fish / Shellfish Today</h2>')
+        parts.append('<div style="font-size:0.82em;color:#888;margin-bottom:6px;">'
+                     'Excluded: Burger (everyday), Taco (everyday), '
+                     'S2 sushi station (always has fish/shellfish), '
+                     'Stacks roast beef (deli meat everyday)</div>')
         for hall, station, meal, name in highlights:
             parts.append(f'<div class="hl-item">{meal} at {hall} ({station}): <b>{name}</b></div>')
         parts.append('</div>')
