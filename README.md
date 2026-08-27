@@ -1,6 +1,8 @@
 # MSU Menu Emailer
 
-Daily email with MSU dining hall menus. Highlights steak and fish items. All recipients are BCC'd (no one sees each other's email).
+Daily email with MSU dining hall menus. Highlights beef, lamb, fish, and shellfish items. All recipients are BCC'd (no one sees each other's email).
+
+Menus are fetched from the Nutrislice API (msu.nutrislice.com) and organized by physical station (e.g. BOILING POINT, CAYENNE'S, STACKS).
 
 ## Setup (first time)
 
@@ -66,13 +68,14 @@ Or use the `RECIPIENT_EMAILS` secret for private emails (see step 3 above).
 1. Click **msu_menu.py** above
 2. Click pencil icon (edit)
 3. Find the `HALLS = {` section near the top
-4. Uncomment a hall (remove the `#`) to add it, or comment it out (add `#`) to remove
+4. Add or remove halls -- each entry needs a display name, Nutrislice slug, and school ID
 5. Click **Commit changes**
 
-Currently active: Brody, Akers, Gallery (Snyder Phillips), Kellogg.
-Available to uncomment: Landon, Case, Shaw, Owen.
+Currently active: Brody Square, The Edge at Akers, The Gallery at Snyder Phillips, South Pointe at Case, The State Room at Kellogg.
 
-### Change highlight keywords (steak, fish, etc.)
+To find slugs and IDs for other halls, check the Nutrislice API: `https://msu.api.nutrislice.com/menu/api/schools`
+
+### Change highlight keywords (beef, lamb, fish, etc.)
 
 Items matching these keywords show up in a special box at the top of the email and are bolded in red in the menu.
 
@@ -81,14 +84,16 @@ Items matching these keywords show up in a special box at the top of the email a
 3. Add or remove keywords (lowercase, one per line inside the list)
 4. Click **Commit changes**
 
-Current keywords: steak, sirloin, ribeye, filet, strip steak, flank, tenderloin, prime rib, brisket, salmon, fish, tilapia, cod, shrimp, seafood, tuna, mahi, swordfish, trout, catfish, walleye, crab, lobster, scallop, calamari, pollock, halibut, perch, crawfish.
+Current keywords: beef, steak, sirloin, ribeye, filet, strip steak, flank, tenderloin, prime rib, short rib, spare rib, brisket, tri-tip, pot roast, lamb, salmon, fish, tilapia, cod, shrimp, seafood, tuna, mahi, swordfish, trout, catfish, walleye, crab, lobster, scallop, calamari, pollock, halibut, perch, crawfish, snapper, grouper, bass, haddock, flounder, sole, anchovy, sardine, mackerel, whitefish.
+
+Excluded from highlights: burger, taco, gravy, salad (not standalone meat), S2 sushi station (always has fish), salad bar (cold/pre-made), Stacks roast beef (deli meat).
 
 ### Change the schedule
 
 1. Edit **.github/workflows/daily-menu.yml**
 2. Find the `cron:` line
 3. Change the time using [crontab.guru](https://crontab.guru/) for help
-4. Default: `0 11 * * *` = 7:00 AM Eastern (11:00 UTC)
+4. Default: `0 9 * * *` = ~7:00 AM Eastern (9:00 UTC, with typical GitHub Actions delays)
 
 ### Run it now (test)
 
@@ -98,4 +103,4 @@ Current keywords: steak, sirloin, ribeye, filet, strip steak, flank, tenderloin,
 
 ## Schedule
 
-Runs daily at 7:00 AM Eastern via GitHub Actions.
+Runs daily at ~7:00 AM Eastern via GitHub Actions.
