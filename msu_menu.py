@@ -247,7 +247,7 @@ h2 {{ color: #18453B; margin-top: 24px; font-size: 1.2em; border-bottom: 1px sol
 
     if has_highlights:
         parts.append('<div class="hl-box">')
-        parts.append('<h2>Beef / Fish / Shellfish Today</h2>')
+        parts.append('<h2>Beef / Lamb / Fish / Shellfish Today</h2>')
         parts.append('<div style="font-size:0.82em;color:#888;margin-bottom:6px;">'
                      'Excluded: Burger (everyday), Taco (everyday), Gravy (side dish), Salad (not a meat), '
                      'S2 sushi station (always has fish/shellfish), '
