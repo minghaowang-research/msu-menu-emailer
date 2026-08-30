@@ -37,7 +37,6 @@ HALLS = {
 MEAL_TYPES = {"Breakfast": 40254, "Lunch": 40255, "Dinner": 42074}
 
 API_BASE = "https://msu.api.nutrislice.com"
-SCHOOLS_URL = f"{API_BASE}/menu/api/schools"
 
 HIGHLIGHT_KEYWORDS = [
     "beef", "steak", "sirloin", "ribeye", "filet", "strip steak", "flank",
@@ -63,7 +62,6 @@ SESSION = requests.Session()
 SESSION.headers.update({"User-Agent": "MSU-Menu-Emailer/1.0"})
 
 DAY_NAMES = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-DAY_KEYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 
 
 def load_emails():
@@ -89,33 +87,6 @@ def load_config():
     all_emails = list(dict.fromkeys(file_emails + config.get("recipient_emails", [])))
     config["recipient_emails"] = all_emails
     return config
-
-
-def check_open_halls():
-    try:
-        resp = SESSION.get(SCHOOLS_URL, timeout=30)
-        resp.raise_for_status()
-    except requests.RequestException as e:
-        log.warning("Could not fetch schools API (%s), will try all halls", e)
-        return set(HALLS.keys())
-
-    schools = resp.json()
-    today_key = DAY_KEYS[datetime.now().weekday()]
-    open_halls = set()
-
-    for school in schools:
-        for hall_name, info in HALLS.items():
-            if school["slug"] == info["slug"]:
-                if school.get(f"{today_key}_enabled", False):
-                    open_halls.add(hall_name)
-                    log.info("  %s: OPEN (%s %s-%s)", hall_name, today_key,
-                             school.get(f"{today_key}_start", "?"),
-                             school.get(f"{today_key}_end", "?"))
-                else:
-                    log.info("  %s: closed (%s not enabled)", hall_name, today_key)
-                break
-
-    return open_halls
 
 
 def _is_cereal(name):
@@ -323,14 +294,8 @@ def main():
     today = datetime.now()
 
     log.info("Date: %s", today.strftime("%Y-%m-%d"))
-    log.info("Checking which halls are open...")
-    open_halls = check_open_halls()
-
     today_data = {}
     for hall_name, info in HALLS.items():
-        if hall_name not in open_halls:
-            log.info("  Skipping %s (closed)", hall_name)
-            continue
         log.info("  Fetching %s", hall_name)
         today_data[hall_name] = fetch_menu(info["id"], today)
 
