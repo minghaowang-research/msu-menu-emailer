@@ -58,6 +58,15 @@ CEREAL_KEYWORDS = [
 
 SKIP_CATEGORIES = {"other", "beverage", "grain"}
 
+# Stations left out of the full menu. Comment out a line to show that station again.
+HIDDEN_STATIONS = {
+    "SALAD BAR": "cold/pre-made, same every day",
+    "DELI": "cold sandwich fillings, same every day",
+    "NOOK": "yogurt, granola, cookies, ice cream, same every day",
+    "DOLCE": "Brody desserts and ice cream",
+    "ALLERGEN CONSCIOUS": "packaged gluten-free/vegan muffins, cookies, soy yogurt",
+}
+
 SESSION = requests.Session()
 SESSION.headers.update({"User-Agent": "MSU-Menu-Emailer/1.0"})
 
@@ -163,6 +172,8 @@ def is_highlight(item_name, station_name):
         return False
     if "gravy" in name_lower:
         return False
+    if "battered pollock" in name_lower:
+        return False
     if "salad" in name_lower:
         return False
     if station_name in ("S2", "SALAD BAR"):
@@ -188,21 +199,22 @@ def build_html(today, today_data):
     for (hall, station, name), meals in hl_by_hall.items():
         hall_stations.setdefault(hall, {}).setdefault(station, []).append(
             f"{name} ({', '.join(meals)})")
-    has_highlights = bool(hall_stations)
 
     parts = [f"""<!DOCTYPE html>
 <html><head><meta charset="utf-8">
 <style>
 body {{ font-family: -apple-system, Helvetica, Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; color: #333; }}
 h1 {{ color: #18453B; border-bottom: 3px solid #18453B; padding-bottom: 8px; font-size: 1.4em; }}
-h2 {{ color: #18453B; margin-top: 24px; font-size: 1.2em; border-bottom: 1px solid #ccc; padding-bottom: 4px; }}
-.hall-col {{ vertical-align: top; padding: 0 12px 12px 0; }}
-.hall-name {{ color: #fff; background: #18453B; padding: 6px 10px; font-weight: bold; font-size: 1.0em; border-radius: 4px 4px 0 0; margin: 0; }}
-.hall-body {{ background: #f9f9f9; border: 1px solid #ddd; border-top: none; border-radius: 0 0 4px 4px; padding: 8px 10px; }}
-.station-name {{ font-weight: bold; color: #444; font-size: 0.9em; margin: 8px 0 2px 0; }}
-.station-name:first-child {{ margin-top: 0; }}
-.item {{ margin: 1px 0; font-size: 0.88em; color: #555; }}
-.item-hl {{ margin: 1px 0; font-size: 0.88em; font-weight: bold; color: #b71c1c; }}
+.hall {{ margin-bottom: 18px; }}
+.hall-name {{ color: #fff; background: #18453B; padding: 6px 10px; font-weight: bold; font-size: 1.05em; border-radius: 4px 4px 0 0; }}
+.hall-body {{ background: #f9f9f9; border: 1px solid #ddd; border-top: none; border-radius: 0 0 4px 4px; padding: 4px 10px; }}
+.meal-row td {{ vertical-align: top; padding: 6px 0; border-bottom: 1px solid #e5e5e5; font-size: 0.88em; color: #555; line-height: 1.45; }}
+.meal-row:last-child td {{ border-bottom: none; }}
+.meal-label {{ font-weight: bold; color: #18453B; width: 80px; padding-right: 8px !important; }}
+.station {{ font-weight: bold; color: #444; font-size: 0.85em; }}
+.station-line {{ margin: 0 0 4px 0; }}
+.sep {{ color: #ccc; padding: 0 3px; }}
+.item-hl {{ font-weight: bold; color: #b71c1c; }}
 .closed {{ color: #999; font-style: italic; }}
 .hl-box {{ background: #fff3e0; border: 2px solid #e65100; border-radius: 8px; padding: 12px; margin-bottom: 18px; }}
 .hl-box h2 {{ color: #e65100; margin: 0 0 6px 0; font-size: 1.05em; border: none; }}
@@ -211,19 +223,16 @@ h2 {{ color: #18453B; margin-top: 24px; font-size: 1.2em; border-bottom: 1px sol
 .closed-halls h2 {{ color: #999; margin: 0 0 8px 0; font-size: 1.05em; border: none; }}
 .closed-hall-entry {{ margin: 4px 0; font-size: 0.93em; color: #666; }}
 .closed-hall-name {{ font-weight: bold; color: #555; }}
+.notes {{ font-size: 0.82em; color: #888; margin-top: 24px; border-top: 1px solid #ddd; padding-top: 10px; }}
+.notes div {{ margin: 4px 0; }}
 .note {{ color: #888; font-size: 0.8em; margin-top: 24px; }}
 </style></head><body>
 <h1>[MSU Menu] {day_name}, {today.strftime('%B %d')}</h1>
 """]
 
-    if has_highlights:
+    if hall_stations:
         parts.append('<div class="hl-box">')
         parts.append('<h2>Beef / Lamb / Fish / Shellfish Today</h2>')
-        parts.append('<div style="font-size:0.82em;color:#888;margin-bottom:6px;">'
-                     'Excluded: Burger (everyday), Taco (everyday), Gravy (side dish), Salad (not a meat), '
-                     'S2 sushi station (always has fish/shellfish), '
-                     'Salad bar (cold/pre-made), '
-                     'Stacks roast beef (deli meat everyday)</div>')
         for hall in hall_stations:
             parts.append(f'<div style="font-weight:bold;margin-top:6px;font-size:0.93em;">{hall}</div>')
             for station, items in hall_stations[hall].items():
@@ -242,33 +251,36 @@ h2 {{ color: #18453B; margin-top: 24px; font-size: 1.2em; border-bottom: 1px sol
     halls_with_menus = sorted(h for h in HALLS if h in today_data and "meals" in today_data.get(h, {}))
     if not halls_with_menus:
         parts.append('<p class="closed">No menu data available for any dining hall today.</p>')
-    else:
+    for hall_name in halls_with_menus:
+        meals = today_data[hall_name]["meals"]
+        parts.append('<div class="hall">')
+        parts.append(f'<div class="hall-name">{hall_name}</div>')
+        parts.append('<div class="hall-body"><table width="100%" cellpadding="0" cellspacing="0">')
         for meal_time in MEAL_TYPES:
-            hall_columns = []
-            for hall_name in halls_with_menus:
-                stations = today_data[hall_name].get("meals", {}).get(meal_time)
-                if not stations:
+            stations = meals.get(meal_time)
+            if not stations:
+                continue
+            chunks = []
+            for station, items in stations.items():
+                if station in HIDDEN_STATIONS:
                     continue
-                col_parts = []
-                for station, items in stations.items():
-                    col_parts.append(f'<div class="station-name">{station}</div>')
-                    for item_name in items:
-                        cls = "item-hl" if is_highlight(item_name, station) else "item"
-                        col_parts.append(f'<div class="{cls}">{item_name}</div>')
-                if col_parts:
-                    hall_columns.append((hall_name, "\n".join(col_parts)))
+                foods = ' <span class="sep">|</span> '.join(
+                    f'<span class="item-hl">{i}</span>' if is_highlight(i, station) else i
+                    for i in items)
+                chunks.append(f'<div class="station-line"><span class="station">{station}:</span> {foods}</div>')
+            if not chunks:
+                continue
+            row = "".join(chunks)
+            parts.append(f'<tr class="meal-row"><td class="meal-label">{meal_time}</td>'
+                         f'<td>{row}</td></tr>')
+        parts.append('</table></div></div>')
 
-            if hall_columns:
-                parts.append(f'<h2>{meal_time}</h2>')
-                parts.append('<table width="100%" cellpadding="0" cellspacing="0"><tr>')
-                col_width = 100 // len(hall_columns)
-                for hall_name, content in hall_columns:
-                    parts.append(f'<td class="hall-col" width="{col_width}%">')
-                    parts.append(f'<div class="hall-name">{hall_name}</div>')
-                    parts.append(f'<div class="hall-body">{content}</div>')
-                    parts.append('</td>')
-                parts.append('</tr></table>')
-
+    hidden = ", ".join(f"{st.title()} ({why})" for st, why in HIDDEN_STATIONS.items())
+    parts.append('<div class="notes"><b>Notes</b>'
+                 '<div>- Not highlighted: Burger (everyday), Taco (everyday), Gravy (side dish), Salad (not a meat), '
+                 'S2 sushi station (always has fish/shellfish), Salad bar (cold/pre-made), '
+                 'Stacks roast beef (deli meat everyday), Battered Pollock (everyday)</div>'
+                 f'<div>- Hidden stations: {hidden}. To show one again, remove it from HIDDEN_STATIONS in the script.</div></div>')
     parts.append('<p class="note">Auto-generated from msu.nutrislice.com</p></body></html>')
     return "\n".join(parts)
 

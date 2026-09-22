@@ -2,7 +2,7 @@
 
 Daily email with MSU dining hall menus. Highlights beef, lamb, fish, and shellfish items. All recipients are BCC'd (no one sees each other's email).
 
-Menus are fetched from the Nutrislice API (msu.nutrislice.com) and organized by physical station (e.g. BOILING POINT, CAYENNE'S, STACKS).
+Menus are fetched from the Nutrislice API (msu.nutrislice.com). The email is grouped by dining hall, with one row per meal (Breakfast, Lunch, Dinner) and each station (e.g. BOILING POINT, CAYENNE'S, STACKS) on its own line.
 
 ## Setup (first time)
 
@@ -86,7 +86,18 @@ Items matching these keywords show up in a special box at the top of the email a
 
 Current keywords: beef, steak, sirloin, ribeye, filet, strip steak, flank, tenderloin, prime rib, short rib, spare rib, brisket, tri-tip, pot roast, lamb, salmon, fish, tilapia, cod, shrimp, seafood, tuna, mahi, swordfish, trout, catfish, walleye, crab, lobster, scallop, calamari, pollock, halibut, perch, crawfish, snapper, grouper, bass, haddock, flounder, sole, anchovy, sardine, mackerel, whitefish.
 
-Excluded from highlights: burger, taco, gravy, salad (not standalone meat), S2 sushi station (always has fish), salad bar (cold/pre-made), Stacks roast beef (deli meat).
+Excluded from highlights: burger, taco, gravy, salad (not standalone meat), S2 sushi station (always has fish), salad bar (cold/pre-made), Stacks roast beef (deli meat), Battered Pollock (served every day).
+
+### Hide stations from the menu
+
+Some stations serve the same cold items or snacks every day, so they are left out of the menu to keep the email short. The email lists them in the Notes section at the bottom.
+
+1. Edit **msu_menu.py** on GitHub
+2. Find `HIDDEN_STATIONS = {` near the top
+3. To show a station again, delete its line or put `#` in front of it. To hide another station, add a line like `"STATION NAME": "reason",` (use the station name exactly as it appears in the email)
+4. Click **Commit changes**
+
+Currently hidden: SALAD BAR, DELI, NOOK, DOLCE, ALLERGEN CONSCIOUS.
 
 ### Change the schedule
 
