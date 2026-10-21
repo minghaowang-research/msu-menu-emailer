@@ -39,7 +39,7 @@ API_BASE = "https://msu.api.nutrislice.com"
 
 HIGHLIGHT_KEYWORDS = [
     "beef", "steak", "sirloin", "ribeye", "filet", "strip steak", "flank",
-    "tenderloin", "prime rib", "short rib", "spare rib", "brisket", "tri-tip", "pot roast", "lamb",
+    "tenderloin", "prime rib", "short rib", "spare rib", "ribs", "brisket", "tri-tip", "pot roast", "lamb",
     "salmon", "fish", "tilapia", "cod", "shrimp", "seafood", "tuna", "mahi",
     "swordfish", "trout", "catfish", "walleye", "crab", "lobster",
     "scallop", "calamari", "pollock", "halibut", "perch", "crawfish",
@@ -174,6 +174,8 @@ def is_highlight(item_name, station_name):
         return False
     if "battered pollock" in name_lower:
         return False
+    if "scalloped" in name_lower:
+        return False
     if "salad" in name_lower:
         return False
     if station_name in ("S2", "SALAD BAR"):
@@ -236,7 +238,7 @@ h1 {{ color: #18453B; border-bottom: 3px solid #18453B; padding-bottom: 8px; fon
 
     if hall_stations:
         parts.append('<div class="hl-box">')
-        parts.append('<h2>Beef / Lamb / Fish / Shellfish Today</h2>')
+        parts.append('<h2>Beef / Lamb / Ribs / Fish / Shellfish Today</h2>')
         for hall in hall_stations:
             parts.append(f'<div style="font-weight:bold;margin-top:6px;font-size:0.93em;">'
                          f'<a href="{hall_url(hall)}" style="color:inherit;">{hall}</a></div>')
@@ -284,7 +286,7 @@ h1 {{ color: #18453B; border-bottom: 3px solid #18453B; padding-bottom: 8px; fon
     parts.append('<div class="notes"><b>Notes</b>'
                  '<div>- Not highlighted: Burger (everyday), Taco (everyday), Gravy (side dish), Salad (not a meat), '
                  'S2 sushi station (always has fish/shellfish), Salad bar (cold/pre-made), '
-                 'Stacks roast beef (deli meat everyday), Battered Pollock (everyday)</div>'
+                 'Stacks roast beef (deli meat everyday), Battered Pollock (everyday), Scalloped Potatoes (not seafood)</div>'
                  f'<div>- Hidden stations: {hidden}. To show one again, remove it from HIDDEN_STATIONS in the script.</div></div>')
     parts.append('<p class="note">Auto-generated from msu.nutrislice.com</p></body></html>')
     return "\n".join(parts)

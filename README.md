@@ -1,6 +1,6 @@
 # MSU Menu Emailer
 
-Daily email with MSU dining hall menus. Highlights beef, lamb, fish, and shellfish items. All recipients are BCC'd (no one sees each other's email).
+Daily email with MSU dining hall menus. Highlights beef, lamb, ribs, fish, and shellfish items. All recipients are BCC'd (no one sees each other's email).
 
 Menus are fetched from the Nutrislice API (msu.nutrislice.com). The email is grouped by dining hall, with one row per meal (Breakfast, Lunch, Dinner) and each station (e.g. STACKS, THE GRILLE, TANDOORI) on its own line. Each hall title links to that hall's menu on msu.nutrislice.com.
 
@@ -75,7 +75,7 @@ Currently active (in email order): The Edge at Akers, The Gallery at Snyder Phil
 
 To find slugs and IDs for other halls, check the Nutrislice API: `https://msu.api.nutrislice.com/menu/api/schools`
 
-### Change highlight keywords (beef, lamb, fish, etc.)
+### Change highlight keywords (beef, lamb, ribs, fish, etc.)
 
 Items matching these keywords show up in a special box at the top of the email and are bolded in red in the menu.
 
@@ -84,9 +84,9 @@ Items matching these keywords show up in a special box at the top of the email a
 3. Add or remove keywords (lowercase, one per line inside the list)
 4. Click **Commit changes**
 
-Current keywords: beef, steak, sirloin, ribeye, filet, strip steak, flank, tenderloin, prime rib, short rib, spare rib, brisket, tri-tip, pot roast, lamb, salmon, fish, tilapia, cod, shrimp, seafood, tuna, mahi, swordfish, trout, catfish, walleye, crab, lobster, scallop, calamari, pollock, halibut, perch, crawfish, snapper, grouper, bass, haddock, flounder, sole, anchovy, sardine, mackerel, whitefish.
+Current keywords: beef, steak, sirloin, ribeye, filet, strip steak, flank, tenderloin, prime rib, short rib, spare rib, ribs, brisket, tri-tip, pot roast, lamb, salmon, fish, tilapia, cod, shrimp, seafood, tuna, mahi, swordfish, trout, catfish, walleye, crab, lobster, scallop, calamari, pollock, halibut, perch, crawfish, snapper, grouper, bass, haddock, flounder, sole, anchovy, sardine, mackerel, whitefish.
 
-Excluded from highlights: burger, taco, gravy, salad (not standalone meat), S2 sushi station (always has fish), salad bar (cold/pre-made), Stacks roast beef (deli meat), Battered Pollock (served every day).
+Excluded from highlights: burger, taco, gravy, salad (not standalone meat), S2 sushi station (always has fish), salad bar (cold/pre-made), Stacks roast beef (deli meat), Battered Pollock (served every day), Scalloped Potatoes (not seafood).
 
 ### Hide stations from the menu
 
