@@ -1,6 +1,6 @@
 # MSU Menu Emailer
 
-Daily email with MSU dining hall menus. Highlights beef, lamb, ribs, fish, and shellfish items. All recipients are BCC'd (no one sees each other's email).
+Daily email with MSU dining hall menus. Highlights beef, lamb, fish, and shellfish items. All recipients are BCC'd (no one sees each other's email).
 
 Menus are fetched from the Nutrislice API (msu.nutrislice.com). The email is grouped by dining hall, with one row per meal (Breakfast, Lunch, Dinner) and each station (e.g. STACKS, THE GRILLE, TANDOORI) on its own line. Each hall title links to that hall's menu on msu.nutrislice.com.
 
@@ -75,7 +75,7 @@ Currently active (in email order): The Edge at Akers, The Gallery at Snyder Phil
 
 To find slugs and IDs for other halls, check the Nutrislice API: `https://msu.api.nutrislice.com/menu/api/schools`
 
-### Change highlight keywords (beef, lamb, ribs, fish, etc.)
+### Change highlight keywords (beef, lamb, fish, etc.)
 
 Items matching these keywords show up in a special box at the top of the email and are bolded in red in the menu.
 
@@ -84,13 +84,15 @@ Items matching these keywords show up in a special box at the top of the email a
 3. Add or remove keywords (lowercase, one per line inside the list)
 4. Click **Commit changes**
 
-Current keywords: beef, steak, sirloin, ribeye, filet, strip steak, flank, tenderloin, prime rib, short rib, spare rib, ribs, brisket, tri-tip, pot roast, lamb, salmon, fish, tilapia, cod, shrimp, seafood, tuna, mahi, swordfish, trout, catfish, walleye, crab, lobster, scallop, calamari, pollock, halibut, perch, crawfish, snapper, grouper, bass, haddock, flounder, sole, anchovy, sardine, mackerel, whitefish.
+Current keywords: beef, steak, sirloin, ribeye, filet, strip steak, flank, tenderloin, prime rib, short rib, brisket, tri-tip, pot roast, lamb, salmon, fish, tilapia, cod, shrimp, seafood, tuna, mahi, swordfish, trout, catfish, walleye, crab, lobster, scallop, calamari, pollock, halibut, perch, crawfish, snapper, grouper, bass, haddock, flounder, sole, anchovy, sardine, mackerel, whitefish.
 
-Excluded from highlights: burger, taco, gravy, salad (not standalone meat), S2 sushi station (always has fish), salad bar (cold/pre-made), Stacks roast beef (deli meat), Battered Pollock (served every day), Scalloped Potatoes (not seafood).
+Excluded from highlights: burger, taco, gravy, salad (not standalone meat), S2 sushi station (always has fish), salad bar (cold/pre-made), Battered Pollock (served every day), Scalloped Potatoes (not seafood).
+
+Basic beef not highlighted: any beef/steak item whose name has soup, au jus, sauce, hot dog, roast beef, sandwich, pizza, ravioli, stromboli, pasta bake, or veggie. Edit `BASIC_BEEF` in **msu_menu.py** to change this. The email's Notes section lists every exclusion and why.
 
 ### Best Meals box
 
-If one hall's meal has 2 or more kinds of highlighted food (Beef / Lamb / Ribs / Seafood), it is listed in a green "Best Meals Today" box at the top, and that meal is shaded green in the hall's menu. Only steak-type cuts count as Beef (sirloin, brisket, short rib, pot roast, etc.); hot dogs, bulgogi, soups, sauces, sandwiches, and veggie "steaks" still show in red but do not count. Edit `BEEF_CUTS`, `COMBO_SKIP`, or `combo_kind()` in **msu_menu.py** to change this.
+If one hall's meal has 2 or more kinds of highlighted food (Beef / Lamb / Seafood), it is listed in a green "Best Meals Today" box at the top, and that meal is shaded green in the hall's menu. Only steak-type cuts count as Beef (sirloin, brisket, short rib, pot roast, etc.); hot dogs, bulgogi, soups, sauces, sandwiches, and veggie "steaks" still show in red but do not count. Edit `BEEF_CUTS`, `COMBO_SKIP`, or `combo_kind()` in **msu_menu.py** to change this.
 
 ### Hide stations from the menu
 

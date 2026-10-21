@@ -40,7 +40,7 @@ API_BASE = "https://msu.api.nutrislice.com"
 
 HIGHLIGHT_KEYWORDS = [
     "beef", "steak", "sirloin", "ribeye", "filet", "strip steak", "flank",
-    "tenderloin", "prime rib", "short rib", "spare rib", "ribs", "brisket", "tri-tip", "pot roast", "lamb",
+    "tenderloin", "prime rib", "short rib", "brisket", "tri-tip", "pot roast", "lamb",
     "salmon", "fish", "tilapia", "cod", "shrimp", "seafood", "tuna", "mahi",
     "swordfish", "trout", "catfish", "walleye", "crab", "lobster",
     "scallop", "calamari", "pollock", "halibut", "perch", "crawfish",
@@ -58,12 +58,27 @@ CEREAL_KEYWORDS = [
 
 SKIP_CATEGORIES = {"other", "beverage", "grain"}
 
-# "Best Meals" box: a hall's meal with 2+ kinds (Beef / Lamb / Ribs / Seafood) among its highlights.
+# "Best Meals" box: a hall's meal with 2+ kinds (Beef / Lamb / Seafood) among its highlights.
 # Only steak-type cuts count as Beef; generic beef (hot dog, bulgogi) still highlights but doesn't count.
 BEEF_CUTS = ["steak", "sirloin", "ribeye", "filet", "flank", "tenderloin", "prime rib", "short rib",
              "brisket", "tri-tip", "pot roast"]
 COMBO_SKIP = ["soup", "bisque", "chowder", "dip", "sauce", "gumbo", "rangoon", "sandwich", "po boy",
               "stick", "nugget", "portabella", "portobello", "eggplant", "cauliflower", "vegan", "tofu"]
+
+# Basic beef/steak items not highlighted (word in name: reason). Listed in the email Notes.
+BASIC_BEEF = {
+    "soup": "soup",
+    "au jus": "dipping broth",
+    "sauce": "pasta sauce",
+    "hot dog": "everyday grill item",
+    "roast beef": "deli meat",
+    "sandwich": "basic sandwich",
+    "pizza": "pizza topping",
+    "ravioli": "pasta filling",
+    "stromboli": "baked roll",
+    "pasta bake": "casserole",
+    "veggie": "vegetarian, no beef",
+}
 
 # Stations left out of the full menu. Comment out a line to show that station again.
 HIDDEN_STATIONS = {
@@ -188,7 +203,7 @@ def is_highlight(item_name, station_name):
         return False
     if station_name in ("S2", "SALAD BAR"):
         return False
-    if station_name == "STACKS" and "roast beef" in name_lower:
+    if ("beef" in name_lower or "steak" in name_lower) and any(k in name_lower for k in BASIC_BEEF):
         return False
     return any(kw in name_lower for kw in HIGHLIGHT_KEYWORDS)
 
@@ -201,8 +216,6 @@ def combo_kind(item_name):
         return "Beef"
     if "lamb" in n:
         return "Lamb"
-    if "ribs" in n or "spare rib" in n:
-        return "Ribs"
     if "beef" in n:
         return None
     return "Seafood"
@@ -275,16 +288,16 @@ h1 {{ color: #18453B; border-bottom: 3px solid #18453B; padding-bottom: 8px; fon
 
     if best:
         parts.append('<div class="best-box">')
-        parts.append('<h2>Best Meals Today (2+ kinds: Beef / Lamb / Ribs / Seafood)</h2>')
+        parts.append('<h2>Best Meals Today (2+ kinds: Beef / Lamb / Seafood)</h2>')
         for (hall, meal), kinds in best.items():
-            got = "; ".join(f"{k}: {', '.join(v)}" for k, v in kinds.items())
+            got = ' <span class="sep">|</span> '.join(f'<b>{k}:</b> {", ".join(v)}' for k, v in kinds.items())
             parts.append(f'<div class="hl-item"><b><a href="{hall_url(hall)}" style="color:inherit;">{hall}</a>'
                          f' - {meal}</b>: {got}</div>')
         parts.append('</div>')
 
     if hall_stations:
         parts.append('<div class="hl-box">')
-        parts.append('<h2>Beef / Lamb / Ribs / Fish / Shellfish Today</h2>')
+        parts.append('<h2>Beef / Lamb / Fish / Shellfish Today</h2>')
         for hall in hall_stations:
             parts.append(f'<div style="font-weight:bold;margin-top:6px;font-size:0.93em;">'
                          f'<a href="{hall_url(hall)}" style="color:inherit;">{hall}</a></div>')
@@ -333,10 +346,12 @@ h1 {{ color: #18453B; border-bottom: 3px solid #18453B; padding-bottom: 8px; fon
         parts.append('</table></div></div>')
 
     hidden = ", ".join(f"{st.title()} ({why})" for st, why in HIDDEN_STATIONS.items())
+    basic = ", ".join(f"{w.title()} ({why})" for w, why in BASIC_BEEF.items())
     parts.append('<div class="notes"><b>Notes</b>'
                  '<div>- Not highlighted: Burger (everyday), Taco (everyday), Gravy (side dish), Salad (not a meat), '
                  'S2 sushi station (always has fish/shellfish), Salad bar (cold/pre-made), '
-                 'Stacks roast beef (deli meat everyday), Battered Pollock (everyday), Scalloped Potatoes (not seafood)</div>'
+                 'Battered Pollock (everyday), Scalloped Potatoes (not seafood)</div>'
+                 f'<div>- Basic beef not highlighted (beef/steak items with these words): {basic}</div>'
                  f'<div>- Hidden stations: {hidden}. To show one again, remove it from HIDDEN_STATIONS in the script.</div>'
                  '<div>- Best Meals: a hall meal with 2+ kinds. Beef counts only steak-type cuts (sirloin, brisket, short rib, etc.); soups, sauces, sandwiches, and veggie "steaks" do not count.</div></div>')
     parts.append('<p class="note">Auto-generated from msu.nutrislice.com</p></body></html>')
