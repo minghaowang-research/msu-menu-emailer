@@ -3,8 +3,8 @@ name: Daily MSU Menu Email
 on:
   schedule:
     # Target delivery ~7 AM Eastern. GitHub Actions has unpredictable delays.
-    # 9:00 UTC = 5 AM EDT / 4 AM EST.
-    - cron: '0 9 * * *'
+    # 6:00 UTC = 2 AM EDT / 1 AM EST. Runs usually start 4-9 hours late.
+    - cron: '0 6 * * *'
   workflow_dispatch:
 
 jobs:

@@ -104,7 +104,7 @@ Currently hidden: SALAD BAR, DELI, NOOK, DOLCE, ALLERGEN CONSCIOUS.
 1. Edit **.github/workflows/daily-menu.yml**
 2. Find the `cron:` line
 3. Change the time using [crontab.guru](https://crontab.guru/) for help
-4. Default: `0 9 * * *` = 9:00 UTC (5 AM EDT / 4 AM EST). GitHub Actions often starts scheduled runs late, so the email may arrive later than that
+4. Default: `0 6 * * *` = 6:00 UTC (2 AM EDT / 1 AM EST). GitHub Actions usually starts scheduled runs hours late, so this early time gets the email out in the morning
 
 ### Run it now (test)
 
