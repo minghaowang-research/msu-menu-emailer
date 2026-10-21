@@ -88,6 +88,10 @@ Current keywords: beef, steak, sirloin, ribeye, filet, strip steak, flank, tende
 
 Excluded from highlights: burger, taco, gravy, salad (not standalone meat), S2 sushi station (always has fish), salad bar (cold/pre-made), Stacks roast beef (deli meat), Battered Pollock (served every day), Scalloped Potatoes (not seafood).
 
+### Best Meals box
+
+If one hall's meal has 2 or more kinds of highlighted food (Beef / Lamb / Ribs / Seafood), it is listed in a green "Best Meals Today" box at the top, and that meal is shaded green in the hall's menu. Only steak-type cuts count as Beef (sirloin, brisket, short rib, pot roast, etc.); hot dogs, bulgogi, soups, sauces, sandwiches, and veggie "steaks" still show in red but do not count. Edit `BEEF_CUTS`, `COMBO_SKIP`, or `combo_kind()` in **msu_menu.py** to change this.
+
 ### Hide stations from the menu
 
 Some stations serve the same cold items or snacks every day, so they are left out of the menu to keep the email short. The email lists them in the Notes section at the bottom.

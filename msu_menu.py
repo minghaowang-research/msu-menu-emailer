@@ -58,6 +58,13 @@ CEREAL_KEYWORDS = [
 
 SKIP_CATEGORIES = {"other", "beverage", "grain"}
 
+# "Best Meals" box: a hall's meal with 2+ kinds (Beef / Lamb / Ribs / Seafood) among its highlights.
+# Only steak-type cuts count as Beef; generic beef (hot dog, bulgogi) still highlights but doesn't count.
+BEEF_CUTS = ["steak", "sirloin", "ribeye", "filet", "flank", "tenderloin", "prime rib", "short rib",
+             "brisket", "tri-tip", "pot roast"]
+COMBO_SKIP = ["soup", "bisque", "chowder", "dip", "sauce", "gumbo", "rangoon", "sandwich", "po boy",
+              "stick", "nugget", "portabella", "portobello", "eggplant", "cauliflower", "vegan", "tofu"]
+
 # Stations left out of the full menu. Comment out a line to show that station again.
 HIDDEN_STATIONS = {
     "SALAD BAR": "cold/pre-made, same every day",
@@ -186,6 +193,21 @@ def is_highlight(item_name, station_name):
     return any(kw in name_lower for kw in HIGHLIGHT_KEYWORDS)
 
 
+def combo_kind(item_name):
+    n = item_name.lower()
+    if any(k in n for k in COMBO_SKIP):
+        return None
+    if any(k in n for k in BEEF_CUTS) and "chicken" not in n:
+        return "Beef"
+    if "lamb" in n:
+        return "Lamb"
+    if "ribs" in n or "spare rib" in n:
+        return "Ribs"
+    if "beef" in n:
+        return None
+    return "Seafood"
+
+
 def hall_url(hall_name):
     return f"https://msu.nutrislice.com/menu/{HALLS[hall_name]['slug']}"
 
@@ -202,6 +224,17 @@ def build_html(today, today_data):
                     if is_highlight(item_name, station):
                         key = (hall_name, station, item_name)
                         hl_by_hall.setdefault(key, []).append(meal)
+    best = {}
+    for hall_name in today_data:
+        for meal, stations in today_data[hall_name].get("meals", {}).items():
+            kinds = {}
+            for station, items in stations.items():
+                for i in items:
+                    kind = combo_kind(i) if is_highlight(i, station) else None
+                    if kind:
+                        kinds.setdefault(kind, []).append(i)
+            if len(kinds) >= 2:
+                best[(hall_name, meal)] = kinds
     hall_stations = {}
     for (hall, station, name), meals in hl_by_hall.items():
         hall_stations.setdefault(hall, {}).setdefault(station, []).append(
@@ -226,6 +259,9 @@ h1 {{ color: #18453B; border-bottom: 3px solid #18453B; padding-bottom: 8px; fon
 .hl-box {{ background: #fff3e0; border: 2px solid #e65100; border-radius: 8px; padding: 12px; margin-bottom: 18px; }}
 .hl-box h2 {{ color: #e65100; margin: 0 0 6px 0; font-size: 1.05em; border: none; }}
 .hl-item {{ margin: 3px 0; font-size: 0.93em; }}
+.best-box {{ background: #e8f5e9; border: 2px solid #2e7d32; border-radius: 8px; padding: 12px; margin-bottom: 18px; }}
+.best-box h2 {{ color: #2e7d32; margin: 0 0 6px 0; font-size: 1.05em; border: none; }}
+.meal-best {{ background: #e8f5e9; }}
 .closed-halls {{ background: #f5f5f5; border: 1px solid #ddd; border-radius: 8px; padding: 12px 16px; margin-bottom: 18px; }}
 .closed-halls h2 {{ color: #999; margin: 0 0 8px 0; font-size: 1.05em; border: none; }}
 .closed-hall-entry {{ margin: 4px 0; font-size: 0.93em; color: #666; }}
@@ -236,6 +272,15 @@ h1 {{ color: #18453B; border-bottom: 3px solid #18453B; padding-bottom: 8px; fon
 </style></head><body>
 <h1>[MSU Menu] {day_name}, {today.strftime('%B %d')}</h1>
 """]
+
+    if best:
+        parts.append('<div class="best-box">')
+        parts.append('<h2>Best Meals Today (2+ kinds: Beef / Lamb / Ribs / Seafood)</h2>')
+        for (hall, meal), kinds in best.items():
+            got = "; ".join(f"{k}: {', '.join(v)}" for k, v in kinds.items())
+            parts.append(f'<div class="hl-item"><b><a href="{hall_url(hall)}" style="color:inherit;">{hall}</a>'
+                         f' - {meal}</b>: {got}</div>')
+        parts.append('</div>')
 
     if hall_stations:
         parts.append('<div class="hl-box">')
@@ -279,7 +324,11 @@ h1 {{ color: #18453B; border-bottom: 3px solid #18453B; padding-bottom: 8px; fon
             if not chunks:
                 continue
             row = "".join(chunks)
-            parts.append(f'<tr class="meal-row"><td class="meal-label">{meal_time}</td>'
+            if (hall_name, meal_time) in best:
+                label = f'<td class="meal-label meal-best">{meal_time}<div style="font-size:0.8em;color:#2e7d32;">2+ kinds</div></td>'
+            else:
+                label = f'<td class="meal-label">{meal_time}</td>'
+            parts.append(f'<tr class="meal-row">{label}'
                          f'<td>{row}</td></tr>')
         parts.append('</table></div></div>')
 
@@ -288,7 +337,8 @@ h1 {{ color: #18453B; border-bottom: 3px solid #18453B; padding-bottom: 8px; fon
                  '<div>- Not highlighted: Burger (everyday), Taco (everyday), Gravy (side dish), Salad (not a meat), '
                  'S2 sushi station (always has fish/shellfish), Salad bar (cold/pre-made), '
                  'Stacks roast beef (deli meat everyday), Battered Pollock (everyday), Scalloped Potatoes (not seafood)</div>'
-                 f'<div>- Hidden stations: {hidden}. To show one again, remove it from HIDDEN_STATIONS in the script.</div></div>')
+                 f'<div>- Hidden stations: {hidden}. To show one again, remove it from HIDDEN_STATIONS in the script.</div>'
+                 '<div>- Best Meals: a hall meal with 2+ kinds. Beef counts only steak-type cuts (sirloin, brisket, short rib, etc.); soups, sauces, sandwiches, and veggie "steaks" do not count.</div></div>')
     parts.append('<p class="note">Auto-generated from msu.nutrislice.com</p></body></html>')
     return "\n".join(parts)
 
