@@ -71,7 +71,7 @@ Or use the `RECIPIENT_EMAILS` secret for private emails (see step 3 above).
 4. Add or remove halls -- each entry needs a display name, Nutrislice slug, and school ID
 5. Click **Commit changes**
 
-Currently active: Brody Square, The Edge at Akers, The Gallery at Snyder Phillips, South Pointe at Case, The State Room at Kellogg.
+Currently active (in email order): The Edge at Akers, The Gallery at Snyder Phillips, South Pointe at Case, The State Room at Kellogg. Halls appear in the order listed in HALLS.
 
 To find slugs and IDs for other halls, check the Nutrislice API: `https://msu.api.nutrislice.com/menu/api/schools`
 

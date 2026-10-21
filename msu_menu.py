@@ -27,9 +27,8 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 HALLS = {
-    "Brody Square": {"slug": "brody-square", "id": 71013},
     "The Edge at Akers": {"slug": "the-edge-at-akers", "id": 71018},
-    "The Gallery at Snyder Phillips": {"slug": "the-gallery-at-synderphillips", "id": 71781},
+    "The Gallery at Snyder Phillips": {"slug": "the-gallery-at-snyderphillips", "id": 71781},
     "South Pointe at Case": {"slug": "south-pointe-at-case", "id": 71015},
     "The State Room at Kellogg": {"slug": "the-state-room-at-kellogg", "id": 71022},
 }
@@ -126,10 +125,11 @@ def _parse_day_menu(day_data):
             continue
         name = food["name"]
         cat = item.get("category", "other")
-        if name in seen or _is_cereal(name) or cat in SKIP_CATEGORIES:
-            continue
         mid = item.get("menu_id")
         station = menu_id_to_station.get(mid, "Other")
+        # Nutrislice files some entrees (e.g. Lamb Gyro) under "other" with the sauces, so keep highlights
+        if name in seen or _is_cereal(name) or (cat in SKIP_CATEGORIES and not is_highlight(name, station)):
+            continue
         stations.setdefault(station, []).append(name)
         seen.add(name)
 
@@ -183,11 +183,15 @@ def is_highlight(item_name, station_name):
     return any(kw in name_lower for kw in HIGHLIGHT_KEYWORDS)
 
 
+def hall_url(hall_name):
+    return f"https://msu.nutrislice.com/menu/{HALLS[hall_name]['slug']}"
+
+
 def build_html(today, today_data):
     day_name = DAY_NAMES[today.weekday()]
 
     hl_by_hall = {}
-    for hall_name in sorted(today_data.keys()):
+    for hall_name in today_data:
         data = today_data[hall_name]
         for meal, stations in data.get("meals", {}).items():
             for station, items in stations.items():
@@ -234,7 +238,8 @@ h1 {{ color: #18453B; border-bottom: 3px solid #18453B; padding-bottom: 8px; fon
         parts.append('<div class="hl-box">')
         parts.append('<h2>Beef / Lamb / Fish / Shellfish Today</h2>')
         for hall in hall_stations:
-            parts.append(f'<div style="font-weight:bold;margin-top:6px;font-size:0.93em;">{hall}</div>')
+            parts.append(f'<div style="font-weight:bold;margin-top:6px;font-size:0.93em;">'
+                         f'<a href="{hall_url(hall)}" style="color:inherit;">{hall}</a></div>')
             for station, items in hall_stations[hall].items():
                 parts.append(f'<div class="hl-item">{station}: {", ".join(items)}</div>')
         parts.append('</div>')
@@ -248,13 +253,13 @@ h1 {{ color: #18453B; border-bottom: 3px solid #18453B; padding-bottom: 8px; fon
                          ' <span style="color:#888;font-size:0.85em;">-- No menu available today</span></div>')
         parts.append('</div>')
 
-    halls_with_menus = sorted(h for h in HALLS if h in today_data and "meals" in today_data.get(h, {}))
+    halls_with_menus = [h for h in HALLS if h in today_data and "meals" in today_data.get(h, {})]
     if not halls_with_menus:
         parts.append('<p class="closed">No menu data available for any dining hall today.</p>')
     for hall_name in halls_with_menus:
         meals = today_data[hall_name]["meals"]
         parts.append('<div class="hall">')
-        parts.append(f'<div class="hall-name">{hall_name}</div>')
+        parts.append(f'<div class="hall-name"><a href="{hall_url(hall_name)}" style="color:#fff;">{hall_name}</a></div>')
         parts.append('<div class="hall-body"><table width="100%" cellpadding="0" cellspacing="0">')
         for meal_time in MEAL_TYPES:
             stations = meals.get(meal_time)
