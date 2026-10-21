@@ -47,7 +47,7 @@ Or use the `RECIPIENT_EMAILS` secret (Settings > Secrets > Actions, comma-separa
 3. Click **Run workflow** > **Run workflow**
 4. Check your inbox in a minute or two
 
-That's it! The email will now arrive daily at 7:00 AM Eastern.
+That's it! The email will now arrive every morning (see Schedule below).
 
 ---
 
@@ -92,7 +92,7 @@ Basic beef not highlighted: any beef/steak item whose name has soup, au jus, sau
 
 ### Best Meals box
 
-If one hall's meal has 2 or more kinds of highlighted food (Beef / Lamb / Seafood), it is listed in a green "Best Meals Today" box at the top, and that meal is shaded green in the hall's menu. Only steak-type cuts count as Beef (sirloin, brisket, short rib, pot roast, etc.); hot dogs, bulgogi, soups, sauces, sandwiches, and veggie "steaks" still show in red but do not count. Edit `BEEF_CUTS`, `COMBO_SKIP`, or `combo_kind()` in **msu_menu.py** to change this.
+If one hall's meal has 2 or more kinds of highlighted food (Beef / Lamb / Seafood), it is listed in a green "Best Meals Today" box at the top, and that meal is shaded green in the hall's menu. On days when no meal qualifies, the box is simply not shown. Only steak-type cuts count as Beef (sirloin, brisket, short rib, pot roast, etc.); hot dogs, bulgogi, soups, sauces, sandwiches, and veggie "steaks" still show in red but do not count. Edit `BEEF_CUTS`, `COMBO_SKIP`, or `combo_kind()` in **msu_menu.py** to change this.
 
 ### Hide stations from the menu
 
@@ -120,4 +120,4 @@ Currently hidden: SALAD BAR, DELI, NOOK, DOLCE, ALLERGEN CONSCIOUS.
 
 ## Schedule
 
-Runs daily at ~7:00 AM Eastern via GitHub Actions.
+Runs daily via GitHub Actions, scheduled for 6:00 UTC (2 AM EDT / 1 AM EST). GitHub usually starts scheduled runs a few hours late (4-9 hours in Sep-Oct 2026), so the email typically arrives in the morning.
