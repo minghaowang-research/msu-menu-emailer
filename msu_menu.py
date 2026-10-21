@@ -30,6 +30,7 @@ HALLS = {
     "The Edge at Akers": {"slug": "the-edge-at-akers", "id": 71018},
     "The Gallery at Snyder Phillips": {"slug": "the-gallery-at-snyderphillips", "id": 71781},
     "South Pointe at Case": {"slug": "south-pointe-at-case", "id": 71015},
+    "Heritage Commons at Landon": {"slug": "heritage-commons-at-landon", "id": 71014},
     "The State Room at Kellogg": {"slug": "the-state-room-at-kellogg", "id": 71022},
 }
 
