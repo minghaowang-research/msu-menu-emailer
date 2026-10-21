@@ -120,4 +120,7 @@ Currently hidden: SALAD BAR, DELI, NOOK, DOLCE, ALLERGEN CONSCIOUS.
 
 ## Schedule
 
+No email is sent on days when none of the halls has a menu posted (summer, winter break, holidays). If even one hall is open, the email goes out and closed halls are listed under "Closed / No Menu".
+
+
 Runs daily via GitHub Actions, scheduled for 6:00 UTC (2 AM EDT / 1 AM EST). GitHub usually starts scheduled runs a few hours late (4-9 hours in Sep-Oct 2026), so the email typically arrives in the morning.

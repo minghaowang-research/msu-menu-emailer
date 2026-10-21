@@ -384,6 +384,11 @@ def main():
         log.info("  Fetching %s", hall_name)
         today_data[hall_name] = fetch_menu(info["id"], today)
 
+    # Breaks/summer: skip the email if none of the halls posted a menu today
+    if not any("meals" in d for d in today_data.values()):
+        log.info("No menus at any hall today; skipping email.")
+        return
+
     log.info("Building email...")
     html = build_html(today, today_data)
 
