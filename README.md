@@ -2,7 +2,7 @@
 
 Daily email with MSU dining hall menus. Highlights beef, lamb, fish, and shellfish items. All recipients are BCC'd (no one sees each other's email).
 
-Menus are fetched from the Nutrislice API (msu.nutrislice.com). The email is grouped by dining hall, with one row per meal (Breakfast, Lunch, Dinner) and each station (e.g. BOILING POINT, CAYENNE'S, STACKS) on its own line.
+Menus are fetched from the Nutrislice API (msu.nutrislice.com). The email is grouped by dining hall, with one row per meal (Breakfast, Lunch, Dinner) and each station (e.g. STACKS, THE GRILLE, TANDOORI) on its own line. Each hall title links to that hall's menu on msu.nutrislice.com.
 
 ## Setup (first time)
 
@@ -104,7 +104,7 @@ Currently hidden: SALAD BAR, DELI, NOOK, DOLCE, ALLERGEN CONSCIOUS.
 1. Edit **.github/workflows/daily-menu.yml**
 2. Find the `cron:` line
 3. Change the time using [crontab.guru](https://crontab.guru/) for help
-4. Default: `0 9 * * *` = ~7:00 AM Eastern (9:00 UTC, with typical GitHub Actions delays)
+4. Default: `0 8 * * *` = 8:00 UTC (4 AM EDT), set early so the email arrives by ~7:00 AM Eastern despite GitHub Actions delays
 
 ### Run it now (test)
 
