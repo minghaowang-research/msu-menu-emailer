@@ -189,9 +189,7 @@ def fetch_menu(hall_id, date):
 
 def is_highlight(item_name, station_name):
     name_lower = item_name.lower()
-    if "burger" in name_lower:
-        return False
-    if "taco" in name_lower:
+    if ("burger" in name_lower or "taco" in name_lower) and not any(k in name_lower for k in ("salmon", "shrimp")):
         return False
     if "gravy" in name_lower:
         return False
@@ -348,7 +346,7 @@ h1 {{ color: #18453B; border-bottom: 3px solid #18453B; padding-bottom: 8px; fon
     hidden = ", ".join(f"{st.title()} ({why})" for st, why in HIDDEN_STATIONS.items())
     basic = ", ".join(f"{w.title()} ({why})" for w, why in BASIC_BEEF.items())
     parts.append('<div class="notes"><b>Notes</b>'
-                 '<div>- Not highlighted: Burger (everyday), Taco (everyday), Gravy (side dish), Salad (not a meat), '
+                 '<div>- Not highlighted: Burger and Taco (everyday; salmon/shrimp ones still highlighted), Gravy (side dish), Salad (not a meat), '
                  'S2 sushi station (always has fish/shellfish), Salad bar (cold/pre-made), '
                  'Battered Pollock (everyday), Scalloped Potatoes (not seafood)</div>'
                  f'<div>- Basic beef not highlighted (beef/steak items with these words): {basic}</div>'

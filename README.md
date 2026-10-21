@@ -86,7 +86,7 @@ Items matching these keywords show up in a special box at the top of the email a
 
 Current keywords: beef, steak, sirloin, ribeye, filet, strip steak, flank, tenderloin, prime rib, short rib, brisket, tri-tip, pot roast, lamb, salmon, fish, tilapia, cod, shrimp, seafood, tuna, mahi, swordfish, trout, catfish, walleye, crab, lobster, scallop, calamari, pollock, halibut, perch, crawfish, snapper, grouper, bass, haddock, flounder, sole, anchovy, sardine, mackerel, whitefish.
 
-Excluded from highlights: burger, taco, gravy, salad (not standalone meat), S2 sushi station (always has fish), salad bar (cold/pre-made), Battered Pollock (served every day), Scalloped Potatoes (not seafood).
+Excluded from highlights: burger, taco (except salmon/shrimp burgers and tacos), gravy, salad (not standalone meat), S2 sushi station (always has fish), salad bar (cold/pre-made), Battered Pollock (served every day), Scalloped Potatoes (not seafood).
 
 Basic beef not highlighted: any beef/steak item whose name has soup, au jus, sauce, hot dog, roast beef, sandwich, pizza, ravioli, stromboli, pasta bake, or veggie. Edit `BASIC_BEEF` in **msu_menu.py** to change this. The email's Notes section lists every exclusion and why.
 
