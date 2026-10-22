@@ -197,6 +197,8 @@ def is_highlight(item_name, station_name):
         return False
     if "scalloped" in name_lower:
         return False
+    if "rangoon" in name_lower or "lo mein" in name_lower:
+        return False
     if "salad" in name_lower:
         return False
     if station_name in ("S2", "SALAD BAR"):
@@ -348,7 +350,7 @@ h1 {{ color: #18453B; border-bottom: 3px solid #18453B; padding-bottom: 8px; fon
     parts.append('<div class="notes"><b>Notes</b>'
                  '<div>- Not highlighted: Burger and Taco (everyday; salmon/shrimp ones still highlighted), Gravy (side dish), Salad (not a meat), '
                  'S2 sushi station (always has fish/shellfish), Salad bar (cold/pre-made), '
-                 'Battered Pollock (everyday), Scalloped Potatoes (not seafood)</div>'
+                 'Battered Pollock (everyday), Scalloped Potatoes (not seafood), Crab Rangoon and Lo Mein (everyday)</div>'
                  f'<div>- Basic beef not highlighted (beef/steak items with these words): {basic}</div>'
                  f'<div>- Hidden stations: {hidden}. To show one again, remove it from HIDDEN_STATIONS in the script.</div>'
                  '<div>- Best Meals: a hall meal with 2+ kinds. Beef counts only steak-type cuts (sirloin, brisket, short rib, etc.); soups, sauces, sandwiches, and veggie "steaks" do not count.</div></div>')
