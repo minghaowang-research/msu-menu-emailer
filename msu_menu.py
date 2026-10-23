@@ -74,7 +74,6 @@ BASIC_BEEF = {
     "roast beef": "deli meat",
     "sandwich": "basic sandwich",
     "pizza": "pizza topping",
-    "ravioli": "pasta filling",
     "stromboli": "baked roll",
     "pasta bake": "casserole",
     "veggie": "vegetarian, no beef",
@@ -189,7 +188,7 @@ def fetch_menu(hall_id, date):
 
 def is_highlight(item_name, station_name):
     name_lower = item_name.lower()
-    if ("burger" in name_lower or "taco" in name_lower) and not any(k in name_lower for k in ("salmon", "shrimp")):
+    if ("burger" in name_lower or "taco" in name_lower) and not any(k in name_lower for k in ("salmon", "shrimp", "lamb")):
         return False
     if "gravy" in name_lower:
         return False
@@ -197,7 +196,7 @@ def is_highlight(item_name, station_name):
         return False
     if "scalloped" in name_lower:
         return False
-    if "rangoon" in name_lower or "lo mein" in name_lower:
+    if "rangoon" in name_lower or "vegan" in name_lower:
         return False
     if "salad" in name_lower:
         return False
@@ -348,9 +347,9 @@ h1 {{ color: #18453B; border-bottom: 3px solid #18453B; padding-bottom: 8px; fon
     hidden = ", ".join(f"{st.title()} ({why})" for st, why in HIDDEN_STATIONS.items())
     basic = ", ".join(f"{w.title()} ({why})" for w, why in BASIC_BEEF.items())
     parts.append('<div class="notes"><b>Notes</b>'
-                 '<div>- Not highlighted: Burger and Taco (everyday; salmon/shrimp ones still highlighted), Gravy (side dish), Salad (not a meat), '
+                 '<div>- Not highlighted: Burger and Taco (everyday; salmon/shrimp/lamb ones still highlighted), Gravy (side dish), Salad (not a meat), '
                  'S2 sushi station (always has fish/shellfish), Salad bar (cold/pre-made), '
-                 'Battered Pollock (everyday), Scalloped Potatoes (not seafood), Crab Rangoon and Lo Mein (everyday)</div>'
+                 'Battered Pollock (everyday), Scalloped Potatoes (not seafood), Crab Rangoon (everyday), Vegan items (no meat or seafood)</div>'
                  f'<div>- Basic beef not highlighted (beef/steak items with these words): {basic}</div>'
                  f'<div>- Hidden stations: {hidden}. To show one again, remove it from HIDDEN_STATIONS in the script.</div>'
                  '<div>- Best Meals: a hall meal with 2+ kinds. Beef counts only steak-type cuts (sirloin, brisket, short rib, etc.); soups, sauces, sandwiches, and veggie "steaks" do not count.</div></div>')
