@@ -346,7 +346,7 @@ h1 {{ color: #18453B; border-bottom: 3px solid #18453B; padding-bottom: 8px; fon
 
     hidden = ", ".join(f"{st.title()} ({why})" for st, why in HIDDEN_STATIONS.items())
     basic = ", ".join(f"{w.title()} ({why})" for w, why in BASIC_BEEF.items())
-    parts.append('<div class="notes"><b>Notes</b>'
+    parts.append('<div class="notes"><b>Notes</b> (highlight rules are based on my own taste)'
                  '<div>- Not highlighted: Burger and Taco (everyday; salmon/shrimp/lamb ones still highlighted), Gravy (side dish), Salad (not a meat), '
                  'S2 sushi station (always has fish/shellfish), Salad bar (cold/pre-made), '
                  'Battered Pollock (everyday), Scalloped Potatoes (not seafood), Crab Rangoon (everyday), Vegan items (no meat or seafood)</div>'
