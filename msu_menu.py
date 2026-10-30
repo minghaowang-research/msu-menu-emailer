@@ -107,15 +107,18 @@ def load_config():
         secret_raw = os.environ.get("RECIPIENT_EMAILS", "")
         secret_emails = [e.strip() for e in secret_raw.split(",") if e.strip()]
         all_emails = list(dict.fromkeys(file_emails + secret_emails))
+        cc_raw = os.environ.get("CC_EMAILS", "")
         return {
             "sender_email": os.environ["SENDER_EMAIL"],
             "recipient_emails": all_emails,
+            "cc_emails": [e.strip() for e in cc_raw.split(",") if e.strip()],
             "app_password": os.environ["APP_PASSWORD"],
         }
     with open(CONFIG_PATH) as f:
         config = json.load(f)
     all_emails = list(dict.fromkeys(file_emails + config.get("recipient_emails", [])))
     config["recipient_emails"] = all_emails
+    config.setdefault("cc_emails", [])
     return config
 
 
@@ -358,18 +361,22 @@ h1 {{ color: #18453B; border-bottom: 3px solid #18453B; padding-bottom: 8px; fon
 
 
 def send_email(html, config, today):
-    recipients = config.get("recipient_emails", [])
+    cc = config.get("cc_emails", [])
+    # Everyone not in Cc is a Bcc recipient: listed only in the SMTP envelope, never in a
+    # header, so recipients cannot see each other's addresses.
+    bcc = [r for r in config.get("recipient_emails", []) if r not in cc]
     day_name = DAY_NAMES[today.weekday()]
     msg = MIMEMultipart("alternative")
     msg["Subject"] = f"[MSU Menu] {day_name}, {today.strftime('%B %-d')}"
     msg["From"] = config["sender_email"]
     msg["To"] = config["sender_email"]
-    msg["Bcc"] = ", ".join(recipients)
+    if cc:
+        msg["Cc"] = ", ".join(cc)
     msg.attach(MIMEText(html, "html"))
 
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
         server.login(config["sender_email"], config["app_password"])
-        server.sendmail(config["sender_email"], recipients, msg.as_string())
+        server.sendmail(config["sender_email"], cc + bcc, msg.as_string())
 
 
 def main():
@@ -399,7 +406,7 @@ def main():
     log.info("Sending email...")
     try:
         send_email(html, config, today)
-        log.info("Email sent to %s", ", ".join(config.get("recipient_emails", [])))
+        log.info("Email sent to %s", ", ".join(dict.fromkeys(config.get("cc_emails", []) + config.get("recipient_emails", []))))
     except Exception as e:
         log.error("Failed to send email: %s", e)
         sys.exit(1)

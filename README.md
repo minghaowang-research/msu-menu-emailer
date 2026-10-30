@@ -29,6 +29,7 @@ In your forked repo:
 | `SENDER_EMAIL` | Your Gmail address (e.g. `you@gmail.com`) |
 | `APP_PASSWORD` | The 16-character app password from step 2 |
 | `RECIPIENT_EMAILS` | (Optional) Comma-separated emails you want to keep private (e.g. `me@gmail.com,friend@gmail.com`) |
+| `CC_EMAILS` | (Optional) Comma-separated emails to show in Cc, visible to every recipient (e.g. your own). Everyone else is Bcc'd. |
 
 ### 4. Add your email
 

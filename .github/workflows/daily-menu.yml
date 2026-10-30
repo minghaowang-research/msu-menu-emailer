@@ -23,4 +23,5 @@ jobs:
         env:
           SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
           RECIPIENT_EMAILS: ${{ secrets.RECIPIENT_EMAILS }}
+          CC_EMAILS: ${{ secrets.CC_EMAILS }}
           APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
