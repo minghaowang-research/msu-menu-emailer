@@ -30,9 +30,12 @@ HALLS = {
     "The Edge at Akers": {"slug": "the-edge-at-akers", "id": 71018},
     "The Gallery at Snyder Phillips": {"slug": "the-gallery-at-snyderphillips", "id": 71781},
     "South Pointe at Case": {"slug": "south-pointe-at-case", "id": 71015},
-    "Heritage Commons at Landon": {"slug": "heritage-commons-at-landon", "id": 71014},
     "The State Room at Kellogg": {"slug": "the-state-room-at-kellogg", "id": 71022},
 }
+
+# Gallery serves Battered Pollock almost every day (51 of 58 days in fall 2026), so it is not
+# highlighted there. Other halls have it a few days a semester, so it still highlights there.
+POLLOCK_EVERYDAY_HALL = "The Gallery at Snyder Phillips"
 
 MEAL_TYPES = {"Breakfast": 40254, "Lunch": 40255, "Dinner": 42074}
 
@@ -189,13 +192,13 @@ def fetch_menu(hall_id, date):
     return {"meals": meals}
 
 
-def is_highlight(item_name, station_name):
+def is_highlight(item_name, station_name, hall_name=None):
     name_lower = item_name.lower()
     if ("burger" in name_lower or "taco" in name_lower) and not any(k in name_lower for k in ("salmon", "shrimp", "lamb")):
         return False
     if "gravy" in name_lower:
         return False
-    if "battered pollock" in name_lower:
+    if "battered pollock" in name_lower and hall_name == POLLOCK_EVERYDAY_HALL:
         return False
     if "scalloped" in name_lower:
         return False
@@ -236,7 +239,7 @@ def build_html(today, today_data):
         for meal, stations in data.get("meals", {}).items():
             for station, items in stations.items():
                 for item_name in items:
-                    if is_highlight(item_name, station):
+                    if is_highlight(item_name, station, hall_name):
                         key = (hall_name, station, item_name)
                         hl_by_hall.setdefault(key, []).append(meal)
     best = {}
@@ -245,7 +248,7 @@ def build_html(today, today_data):
             kinds = {}
             for station, items in stations.items():
                 for i in items:
-                    kind = combo_kind(i) if is_highlight(i, station) else None
+                    kind = combo_kind(i) if is_highlight(i, station, hall_name) else None
                     if kind:
                         kinds.setdefault(kind, []).append(i)
             if len(kinds) >= 2:
@@ -333,7 +336,7 @@ h1 {{ color: #18453B; border-bottom: 3px solid #18453B; padding-bottom: 8px; fon
                 if station in HIDDEN_STATIONS:
                     continue
                 foods = ' <span class="sep">|</span> '.join(
-                    f'<span class="item-hl">{i}</span>' if is_highlight(i, station) else i
+                    f'<span class="item-hl">{i}</span>' if is_highlight(i, station, hall_name) else i
                     for i in items)
                 chunks.append(f'<div class="station-line"><span class="station">{station}:</span> {foods}</div>')
             if not chunks:
@@ -352,7 +355,7 @@ h1 {{ color: #18453B; border-bottom: 3px solid #18453B; padding-bottom: 8px; fon
     parts.append('<div class="notes"><b>Notes</b> (highlight rules are based on my own taste)'
                  '<div>- Not highlighted: Burger and Taco (everyday; salmon/shrimp/lamb ones still highlighted), Gravy (side dish), Salad (not a meat), '
                  'S2 sushi station (always has fish/shellfish), Salad bar (cold/pre-made), '
-                 'Battered Pollock (everyday), Scalloped Potatoes (not seafood), Crab Rangoon (everyday), Vegan items (no meat or seafood)</div>'
+                 'Battered Pollock at Gallery only (everyday there), Scalloped Potatoes (not seafood), Crab Rangoon (everyday), Vegan items (no meat or seafood)</div>'
                  f'<div>- Basic beef not highlighted (beef/steak items with these words): {basic}</div>'
                  f'<div>- Hidden stations: {hidden}. To show one again, remove it from HIDDEN_STATIONS in the script.</div>'
                  '<div>- Best Meals: a hall meal with 2+ kinds. Beef counts only steak-type cuts (sirloin, brisket, short rib, etc.); soups, sauces, sandwiches, and veggie "steaks" do not count.</div></div>')

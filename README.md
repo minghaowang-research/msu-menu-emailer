@@ -72,7 +72,7 @@ Or use the `RECIPIENT_EMAILS` secret for private emails (see step 3 above).
 4. Add or remove halls -- each entry needs a display name, Nutrislice slug, and school ID
 5. Click **Commit changes**
 
-Currently active (in email order): The Edge at Akers, The Gallery at Snyder Phillips, South Pointe at Case, Heritage Commons at Landon, The State Room at Kellogg. Halls appear in the order listed in HALLS.
+Currently active (in email order): The Edge at Akers, The Gallery at Snyder Phillips, South Pointe at Case, The State Room at Kellogg. Halls appear in the order listed in HALLS.
 
 To find slugs and IDs for other halls, check the Nutrislice API: `https://msu.api.nutrislice.com/menu/api/schools`
 
@@ -89,7 +89,7 @@ Current keywords: beef, steak, sirloin, ribeye, filet, strip steak, flank, tende
 
 These highlight and exclusion rules are based on my own taste; change them to fit yours.
 
-Excluded from highlights: burger, taco (except salmon/shrimp/lamb burgers and tacos), gravy, salad (not standalone meat), S2 sushi station (always has fish), salad bar (cold/pre-made), Battered Pollock (served every day), Scalloped Potatoes (not seafood), Crab Rangoon (everyday), anything vegan (no meat or seafood).
+Excluded from highlights: burger, taco (except salmon/shrimp/lamb burgers and tacos), gravy, salad (not standalone meat), S2 sushi station (always has fish), salad bar (cold/pre-made), Battered Pollock at The Gallery only (served there every day; highlighted at other halls), Scalloped Potatoes (not seafood), Crab Rangoon (everyday), anything vegan (no meat or seafood).
 
 Basic beef not highlighted: any beef/steak item whose name has soup, au jus, sauce, hot dog, roast beef, sandwich, pizza, stromboli, pasta bake, or veggie. Edit `BASIC_BEEF` in **msu_menu.py** to change this. The email's Notes section lists every exclusion and why.
 
